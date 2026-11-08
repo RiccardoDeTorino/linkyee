@@ -256,8 +256,9 @@ a { color: inherit; text-decoration: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .caret { animation: none; }
-  *, *::before, *::after { transition: none !important; }
+  .link-latest-badge {
+    animation: latest-blink 1.6s steps(2, start) infinite;
+  }
 }
 
 /* "Latest" link variant — phosphor-green tag, blink */
