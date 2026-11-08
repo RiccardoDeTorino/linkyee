@@ -164,13 +164,13 @@ links:
 # -----------------------------------------------------------------------------
 socials:
   - social:
-      icon: "fa-solid fa-envelope-open-text"
+      icon: "fa-solid fa-newspaper"
       url: "https://blog.zhgchg.li"
       title: "ZhgChgLi's Medium"
       alt: "ZhgChgLi's Medium"
       target: "_blank"
   - social:
-      icon: "fa-solid fa-newspaper"
+      icon: "fa-brands fa-substack"
       url: "https://riccardodetorino.substack.com/"
       title: "Riccardo DeTorino Substack"
       alt: "Riccardo DeTorino Substack"
