@@ -1,109 +1,213 @@
-<!DOCTYPE html>
-<html lang="{{ lang }}"{% if color_scheme == "light" %} class="scheme-light"{% elsif color_scheme == "dark" %} class="scheme-dark"{% endif %}>
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>{{ title }}</title>
+# =============================================================================
+# linkyee — Site Configuration
+#
+# This file is rendered through Liquid: every {{ ... }} below is evaluated
+# at build time. Plugin output lives under `vars.<PluginName>` — see
+# `plugins/README.md` for the full plugin developer wiki.
+# =============================================================================
 
-  <meta name="last-modified" content="{{ last_modified_at }}">
-  <meta name="theme-color" content="#0c0f0a">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+# Theme — directory under ./themes/. Built-ins:
+#   default | minimal-mono | editorial-serif | neo-brutalism
+#   glassmorphism | terminal-retro | paper-card | newsprint
+theme: terminal-retro
 
-  <meta property="og:title" content="{{ title }}" />
-  <meta name="author" content="{{ name }}" />
-  <meta property="og:locale" content="{{ og_locale | default: 'en_US' }}" />
-  <meta name="description" content="{{ tagline }}" />
-  <meta property="og:description" content="{{ tagline }}" />
-  <meta property="og:site_name" content="{{ title }}" />
-  <meta property="og:image" content="{{ avatar }}" />
-  <meta property="og:type" content="article" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta property="twitter:image" content="{{ avatar }}" />
-  <meta property="twitter:title" content="{{ title }}" />
+# HTML <html lang> attribute
+lang: "en"
 
-  <link rel="apple-touch-icon" sizes="180x180" href="./images/favicons/favicon.png">
-  <link rel="shortcut icon" href="./images/favicons/favicon.png">
-  <meta name="apple-mobile-web-app-title" content="{{ title }}">
-  <meta name="application-name" content="{{ title }}">
+# Force a color scheme regardless of the visitor's system appearance:
+#   auto  — follow OS (default; the page auto-switches between light/dark)
+#   light — always render light mode
+#   dark  — always render dark mode
+# Note: dark-first themes (e.g. terminal-retro) ignore "light" — their
+# whole identity is the dark palette.
+color_scheme: dark
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-  <link rel="stylesheet" href="./styles.css?v={{ last_modified_at }}" />
-  {% if i18n_enabled %}
-    {% for option in language_options %}
-      <link rel="alternate" hreflang="{{ option.code }}" href="../{{ option.code }}/" />
-    {% endfor %}
-    <link rel="stylesheet" href="./i18n.css?v={{ last_modified_at }}" />
-  {% endif %}
-</head>
-<body>
-  {% if i18n_enabled %}
-    <nav class="language-switcher" aria-label="{{ ui.language_switcher | default: 'Language' }}">
-      {% for option in language_options %}
-        <a href="../{{ option.code }}/" data-locale="{{ option.code }}"{% if option.code == locale %} aria-current="page"{% endif %}>{{ option.label }}</a>
-      {% endfor %}
-    </nav>
-  {% endif %}
-  <div class="scanlines" aria-hidden="true"></div>
+# -----------------------------------------------------------------------------
+# Plugins — every built-in plugin is shown below as a working example.
+# Remove the ones you don't need. Output is referenced as {{ vars.PluginName }}.
+# Full reference: plugins/README.md
+#
+# ⚠️ SECRETS — never put API keys / tokens in this file. config.yml is
+# committed to git and rendered into the publicly served site. If a plugin
+# needs auth (a personal access token, Steam Web API key, weather API
+# token, ...), set it as a GitHub Actions repository secret
+# (Settings → Secrets and variables → Actions → New repository secret),
+# expose it to the build via `env:` in `.github/workflows/build.yml`,
+# and read it from the plugin with ENV['MY_SECRET']. See plugins/README.md
+# for the canonical pattern.
+# -----------------------------------------------------------------------------
+plugins:
+  # Star counts for one or more GitHub repos.
+  # Use as: {{ vars.GithubRepoStarsCountPlugin['owner/repo'] }}
+  - GithubRepoStarsCountPlugin:
+      - ZhgChgLi/ZMarkupParser
+      - ZhgChgLi/ZReviewTender
+      - ZhgChgLi/ZMediumToMarkdown
+      - ZhgChgLi/linkyee
 
-  <main class="container">
-    <div class="window">
-      <div class="window-bar">
-       
-        <span class="window-title">~ / Deep Dive Down The Rabbit Hole</span>
-      </div>
-      <div class="window-body">
-        <header class="profile">
-          <pre class="prompt">$ whoami</pre>
-          <img src="{{ avatar }}" alt="{{ ui.profile_picture | default: 'Profile Picture' }}" class="profile-pic" />
-          <h1 class="name">{{ name }}<span class="caret" aria-hidden="true">&#9608;</span></h1>
-          <p class="description">{{ tagline }}</p>
-        </header>
+  # Latest commit (sha / date / message) for a repo. Use as:
+  #   {{ vars.GithubLastCommitPlugin['owner/repo'].date }}
+  #   {{ vars.GithubLastCommitPlugin['owner/repo'].sha }}
+  - GithubLastCommitPlugin:
+      - ZhgChgLi/linkyee
 
-        <pre class="prompt">{{ ui.terminal_links | default: '$ ls ./links/' }}</pre>
-        <nav class="links" aria-label="{{ ui.primary_links | default: 'Primary links' }}">
-          {% for item in links %}
-            {% assign link = item.link %}
-            <a href="{{ link.url }}" target="{{ link.target }}" class="link-button{% if link.latest %} link-latest{% endif %}" alt="{{ link.alt }}" title="{{ link.title }}">
-              <span class="link-prefix" aria-hidden="true">&gt;</span>
-              <span class="link-icon" aria-hidden="true"><i class="{{ link.icon }}"></i></span>
-              {% if link.latest %}<span class="link-latest-badge" aria-hidden="true">{{ ui.terminal_latest | default: '[NEW]' }}</span>{% endif %}
-              <span class="link-text">{{ link.text }}</span>
-            </a>
-          {% endfor %}
-        </nav>
+  # Public profile stats (followers / following / public_repos). Use as:
+  #   {{ vars.GithubProfilePlugin['user'].followers }}
+  - GithubProfilePlugin:
+      - ZhgChgLi
 
-        <pre class="prompt">{{ ui.terminal_socials | default: '$ cat ./socials' }}</pre>
-        <div class="button-container">
-          <div class="button-group">
-            {% for item in socials %}
-              {% assign social = item.social %}
-              <a href="{{ social.url }}" title="{{ social.title }}" target="{{ social.target }}" class="icon-button" alt="{{ social.alt }}">
-                <i class="{{ social.icon }}"></i>
-              </a>
-            {% endfor %}
-          </div>
-        </div>
+  # Latest items from any RSS / Atom feed (Medium, blogs, YouTube channels,
+  # podcasts...). Returns an array of { title, url, date } per feed URL.
+  # Iterate inside theme index.html with {% for item in vars.RSSFeedPlugin[...] %}.
+  - RSSFeedPlugin:
+      - https://en.zhgchg.li/feed.xml
 
-        <footer class="footer">
-          <pre class="prompt">{{ ui.terminal_footer | default: '$ tail -n 1 ./footer' }}</pre>
-          {{ footer }}
-          <div class="copyright">{{ copyright }}</div>
-        </footer>
-      </div>
-    </div>
-  </main>
+  # Days until / since a target date. Hash-style — labels become keys.
+  # Use as: {{ vars.CountdownPlugin.label.days }}, .target, .passed
+  - CountdownPlugin:
+      linkyee_release: "2024-12-21"
 
-  {% if google_analytics_id %}
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{ google_analytics_id }}"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', '{{ google_analytics_id }}');
-    </script>
-  {% endif %}
-  <script src="./scripts.js?v={{ last_modified_at }}"></script>
-  {% if i18n_enabled %}<script src="./i18n.js?v={{ last_modified_at }}"></script>{% endif %}
-</body>
-</html>
+  # Latest video for one or more YouTube channels (channel id, @handle, or URL).
+  # Use as: {{ vars.YouTubeChannelLatestVideoPlugin['@handle'].title }}
+  #         {{ vars.YouTubeChannelLatestVideoPlugin['@handle'].url }}
+  - YouTubeChannelLatestVideoPlugin:
+      - "@zhgchgli"
+
+# -----------------------------------------------------------------------------
+# Tracking
+# -----------------------------------------------------------------------------
+google_analytics_id:
+
+# -----------------------------------------------------------------------------
+# Profile header
+# -----------------------------------------------------------------------------
+title: "Follow The White Rabbit"
+avatar: "./images/profile.jpeg"
+name: "Riccardo DeTorino"
+tagline: >-
+    An iOS, web, and automation developer from Taiwan 🇹🇼 who also loves sharing, traveling, and writing.
+    Followed by {{ vars.GithubProfilePlugin['ZhgChgLi'].followers }} on GitHub across {{ vars.GithubProfilePlugin['ZhgChgLi'].repos }} public repos.
+
+# -----------------------------------------------------------------------------
+# Links
+#   icon  — Font Awesome class (https://fontawesome.com/search?o=r&m=free)
+#   text  — displayed text (Liquid + HTML allowed)
+#   title — link title attribute
+#   url   — destination
+#   alt   — accessibility text
+#   target — `_blank` (new tab) or `_self`
+# -----------------------------------------------------------------------------
+links:
+  - link:
+      icon: "fa-solid fa-rss"
+      text: "Tech Blog <span class='link-button-text'>(120+ Posts)</span>"
+      url: "https://zhgchg.li"
+      alt: "ZhgChgLi Tech & Travel Blog"
+      title: "ZhgChgLi Tech & Travel Blog"
+      target: "_blank"
+
+  # → uses GithubRepoStarsCountPlugin
+  - link:
+      icon: "fa-brands fa-swift"
+      text: "ZMarkupParser <span class='link-button-text'>({{vars.GithubRepoStarsCountPlugin['ZhgChgLi/ZMarkupParser']}} Stars)</span>"
+      url: "https://github.com/ZhgChgLi/ZMarkupParser"
+      alt: "ZMarkupParser is a pure-Swift library that helps you to convert HTML strings to NSAttributedString with customized style and tags."
+      title: "ZMarkupParser is a pure-Swift library that helps you to convert HTML strings to NSAttributedString with customized style and tags."
+      target: "_blank"
+  - link:
+      icon: "fa-brands fa-app-store-ios"
+      text: "ZReviewTender <span class='link-button-text'>({{vars.GithubRepoStarsCountPlugin['ZhgChgLi/ZReviewTender']}} Stars)</span>"
+      url: "https://github.com/ZhgChgLi/ZReviewTender"
+      alt: "ZReviewTender is a tool for fetching app reviews from the App Store and Google Play Console and integrating them into your workflow."
+      title: "ZReviewTender is a tool for fetching app reviews from the App Store and Google Play Console and integrating them into your workflow."
+      target: "_blank"
+  - link:
+      icon: "fa-brands fa-markdown"
+      text: "ZMediumToMarkdown <span class='link-button-text'>({{vars.GithubRepoStarsCountPlugin['ZhgChgLi/ZMediumToMarkdown']}} Stars)</span>"
+      url: "https://github.com/ZhgChgLi/ZMediumToMarkdown"
+      alt: "ZMediumToMarkdown is a powerful tool that allows you to effortlessly download and convert your Medium posts to Markdown format."
+      title: "ZMediumToMarkdown is a powerful tool that allows you to effortlessly download and convert your Medium posts to Markdown format."
+      target: "_blank"
+
+  # → uses GithubRepoStarsCountPlugin + GithubLastCommitPlugin
+  - link:
+      icon: "fa-brands fa-github"
+      text: "linkyee <span class='link-button-text'>({{vars.GithubRepoStarsCountPlugin['ZhgChgLi/linkyee']}} ⭐ · last update {{ vars.GithubLastCommitPlugin['ZhgChgLi/linkyee'].date }})</span>"
+      url: "https://github.com/ZhgChgLi/linkyee"
+      alt: "linkyee is a fully customized, open-source LinkTree alternative deployed directly on GitHub Pages."
+      title: "linkyee is a fully customized, open-source LinkTree alternative deployed directly on GitHub Pages."
+      target: "_blank"
+
+  # → uses RSSFeedPlugin (latest blog post). `latest: true` opts into the
+  #   theme's "LATEST" badge styling.
+  - link:
+      icon: "fa-solid fa-newspaper"
+      text: "{{ vars.RSSFeedPlugin['https://en.zhgchg.li/feed.xml'][0].title }}"
+      url: "{{ vars.RSSFeedPlugin['https://en.zhgchg.li/feed.xml'][0].url }}"
+      alt: "Latest blog post by ZhgChgLi"
+      title: "Latest blog post"
+      target: "_blank"
+      latest: true
+
+  # → uses YouTubeChannelLatestVideoPlugin
+  - link:
+      icon: "fa-brands fa-youtube"
+      text: "{{ vars.YouTubeChannelLatestVideoPlugin['@zhgchgli'].title }}"
+      url: "{{ vars.YouTubeChannelLatestVideoPlugin['@zhgchgli'].url }}"
+      alt: "Latest YouTube video"
+      title: "Latest YouTube video"
+      target: "_blank"
+      latest: true
+
+# -----------------------------------------------------------------------------
+# Social media buttons
+# -----------------------------------------------------------------------------
+socials:
+  - social:
+      icon: "fa-solid fa-envelope-open-text"
+      url: "https://blog.zhgchg.li"
+      title: "ZhgChgLi's Medium"
+      alt: "ZhgChgLi's Medium"
+      target: "_blank"
+  - social:
+      icon: "fa-brands fa-substack"
+      url: "https://riccardodetorino.substack.com/"
+      title: "Riccardo DeTorino Substack"
+      alt: "Riccardo DeTorino Substack"
+      target: "_blank"
+  - social:
+      icon: "fa-brands fa-twitter"
+      url: "https://twitter.com/zhgchgli"
+      title: "ZhgChgLi's Twitter"
+      alt: "ZhgChgLi's Twitter"
+      target: "_blank"
+  - social:
+      icon: "fa-solid fa-pen-nib"
+      url: "https://www.linkedin.com/in/zhgchgli/"
+      title: "ZhgChgLi's LinkedIn"
+      alt: "ZhgChgLi's LinkedIn"
+      target: "_blank"
+  - social:
+      icon: "fa-brands fa-instagram"
+      url: "https://www.instagram.com/zhgchgli/"
+      title: "Instagram"
+      alt: "ZhgChgLi's Instagram"
+      target: "_blank"
+  - social:
+      icon: "fa-solid fa-envelope"
+      url: "mailto:zhgchgli@gmail.com"
+      title: "Email: zhgchgli@gmail.com"
+      alt: "zhgchgli@gmail.com"
+      target: "_blank"
+
+# -----------------------------------------------------------------------------
+# Footer (uses CountdownPlugin)
+# -----------------------------------------------------------------------------
+footer: >
+    Hi there! Follow me on Medium or GitHub, or stay connected on Instagram or LinkedIn.
+    <br>linkyee has been live for {{ vars.CountdownPlugin.linkyee_release.days }} days. 🎉
+
+# Footer copyright message
+# Linkyee is a 100% free, open-source project—feel free to modify the copyright message as you like. :)
+copyright: >
+  © {{ year }} <a href="https://link.zhgchg.li" target="_blank">ZhgChgLi</a>. Powered by <a href="https://github.com/ZhgChgLi/linkyee" target="_blank">linkyee</a>

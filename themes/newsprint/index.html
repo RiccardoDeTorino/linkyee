@@ -6,8 +6,8 @@
   <title>{{ title }}</title>
 
   <meta name="last-modified" content="{{ last_modified_at }}">
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f3efe7">
-  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0e0f12">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0a0a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -23,18 +23,12 @@
   <meta property="twitter:image" content="{{ avatar }}" />
   <meta property="twitter:title" content="{{ title }}" />
 
-  <link rel="apple-touch-icon" sizes="180x180" href="./images/favicons/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicons/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="./images/favicons/favicon-16x16.png">
-  <link rel="manifest" href="./images/favicons/site.webmanifest">
+  <link rel="apple-touch-icon" sizes="180x180" href="./images/favicons/favicon.ico">
   <link rel="shortcut icon" href="./images/favicons/favicon.ico">
   <meta name="apple-mobile-web-app-title" content="{{ title }}">
   <meta name="application-name" content="{{ title }}">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link rel="stylesheet" href="./styles.css?v={{ last_modified_at }}" />
   {% if i18n_enabled %}
     {% for option in language_options %}
@@ -51,74 +45,44 @@
       {% endfor %}
     </nav>
   {% endif %}
-  <main class="page">
-    <header class="masthead">
-      <div class="masthead-meta mono">
-        <span>{{ ui.newsprint_volume | default: 'VOL. ' | append: year | append: ' · LINKS' }}</span>
-        <span>{{ today }}</span>
-      </div>
-      <div class="masthead-head">
-        <img src="{{ avatar }}" alt="{{ name }}" class="masthead-avatar" />
-        <div class="masthead-headline">
-          <h1 class="masthead-name serif">{{ name }}</h1>
-        </div>
-      </div>
-      <p class="masthead-bio">{{ tagline }}</p>
+  <main class="container">
+    <header class="profile">
+      <img src="{{ avatar }}" alt="{{ ui.profile_picture | default: 'Profile Picture' }}" class="profile-pic" />
+      <h1 class="name">{{ name }}</h1>
+      <p class="description">{{ tagline }}</p>
     </header>
 
-    {% assign link_count = links | size %}
-    <section class="section">
-      <div class="section-head">
-        <h2 class="section-label mono">{{ ui.newsprint_links | default: '01 / Links' }}</h2>
-        <span class="section-count mono">{{ link_count }} {{ ui.entries | default: 'ENTRIES' }}</span>
-      </div>
-      <div class="links">
-        {% for item in links %}
-          {% assign link = item.link %}
-          <a href="{{ link.url }}" target="{{ link.target }}" class="link-row{% if link.latest %} link-latest{% endif %}" alt="{{ link.alt }}" title="{{ link.title }}">
-            <span class="link-row-index mono">{{ forloop.index | prepend: '00' | slice: -2, 2 }}</span>
-            <div class="link-row-body">
-              <div class="link-row-title">
-                <i class="{{ link.icon }}"></i>
-                <span>{% if link.latest %}<span class="link-latest-badge mono">{{ ui.new | default: 'NEW' }}</span>{% endif %}{{ link.text }}</span>
-              </div>
-            </div>
-            <span class="link-row-arrow">&rarr;</span>
-          </a>
-        {% endfor %}
-      </div>
-    </section>
+    <hr class="rule" aria-hidden="true" />
 
-    {% assign social_count = socials | size %}
-    <section class="section">
-      <div class="section-head">
-        <h2 class="section-label mono">{{ ui.newsprint_connect | default: '02 / Connect' }}</h2>
-        <span class="section-count mono">{{ social_count }} {{ ui.entries | default: 'ENTRIES' }}</span>
-      </div>
-      <div class="socials">
+    <nav class="links" aria-label="{{ ui.primary_links | default: 'Primary links' }}">
+      {% for item in links %}
+        {% assign link = item.link %}
+        <a href="{{ link.url }}" target="{{ link.target }}" class="link-button{% if link.latest %} link-latest{% endif %}" alt="{{ link.alt }}" title="{{ link.title }}">
+          {% if link.latest %}<span class="link-latest-badge" aria-hidden="true">[{{ ui.latest | default: 'LATEST' }}]</span>{% endif %}
+          <span class="link-icon" aria-hidden="true"><i class="{{ link.icon }}"></i></span>
+          <span class="link-text">{{ link.text }}</span>
+          <span class="link-arrow" aria-hidden="true">&rarr;</span>
+        </a>
+      {% endfor %}
+    </nav>
+
+    <div class="button-container">
+      <div class="button-group">
         {% for item in socials %}
           {% assign social = item.social %}
-          <a href="{{ social.url }}" title="{{ social.title }}" target="{{ social.target }}" class="social-cell" alt="{{ social.alt }}">
-            <span class="social-cell-label">
-              <i class="{{ social.icon }}"></i>
-              <span>{{ social.title }}</span>
-            </span>
-            <span class="social-cell-arrow">&rarr;</span>
+          <a href="{{ social.url }}" title="{{ social.title }}" target="{{ social.target }}" class="icon-button" alt="{{ social.alt }}">
+            <i class="{{ social.icon }}"></i>
           </a>
         {% endfor %}
       </div>
-    </section>
+    </div>
 
     <footer class="footer">
-      <div class="footer-text">{{ footer }}</div>
-      <div class="footer-meta mono">
-        <span>{{ copyright }}</span>
-      </div>
+      {{ footer }}
+      <div class="copyright">{{ copyright }}</div>
     </footer>
   </main>
 
-  <script src="./scripts.js?v={{ last_modified_at }}"></script>
-  {% if i18n_enabled %}<script src="./i18n.js?v={{ last_modified_at }}"></script>{% endif %}
   {% if google_analytics_id %}
     <script async src="https://www.googletagmanager.com/gtag/js?id={{ google_analytics_id }}"></script>
     <script>
@@ -128,5 +92,7 @@
       gtag('config', '{{ google_analytics_id }}');
     </script>
   {% endif %}
+  <script src="./scripts.js?v={{ last_modified_at }}"></script>
+  {% if i18n_enabled %}<script src="./i18n.js?v={{ last_modified_at }}"></script>{% endif %}
 </body>
 </html>

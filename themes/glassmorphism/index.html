@@ -6,8 +6,8 @@
   <title>{{ title }}</title>
 
   <meta name="last-modified" content="{{ last_modified_at }}">
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#e6f3ee">
-  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0c1820">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fef6ee">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1c1814">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -28,7 +28,7 @@
   <meta name="apple-mobile-web-app-title" content="{{ title }}">
   <meta name="application-name" content="{{ title }}">
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link rel="stylesheet" href="./styles.css?v={{ last_modified_at }}" />
   {% if i18n_enabled %}
     {% for option in language_options %}
@@ -45,13 +45,11 @@
       {% endfor %}
     </nav>
   {% endif %}
-  <div class="bg-shape bg-shape-1" aria-hidden="true"></div>
-  <div class="bg-shape bg-shape-2" aria-hidden="true"></div>
-  <div class="bg-shape bg-shape-3" aria-hidden="true"></div>
-
   <main class="container">
-    <section class="card profile-card">
-      <img src="{{ avatar }}" alt="{{ ui.profile_picture | default: 'Profile Picture' }}" class="profile-pic" />
+    <section class="profile-card">
+      <div class="profile-pic-wrap">
+        <img src="{{ avatar }}" alt="{{ ui.profile_picture | default: 'Profile Picture' }}" class="profile-pic" />
+      </div>
       <h1 class="name">{{ name }}</h1>
       <p class="description">{{ tagline }}</p>
     </section>
@@ -59,15 +57,15 @@
     <nav class="links" aria-label="{{ ui.primary_links | default: 'Primary links' }}">
       {% for item in links %}
         {% assign link = item.link %}
-        <a href="{{ link.url }}" target="{{ link.target }}" class="card link-button{% if link.latest %} link-latest{% endif %}" alt="{{ link.alt }}" title="{{ link.title }}">
-          {% if link.latest %}<span class="link-latest-badge" aria-hidden="true">{{ ui.latest | default: 'LATEST' }}</span>{% endif %}
+        <a href="{{ link.url }}" target="{{ link.target }}" class="link-button{% if link.latest %} link-latest{% endif %}" alt="{{ link.alt }}" title="{{ link.title }}">
+          {% if link.latest %}<span class="link-latest-badge" aria-hidden="true">{{ ui.new | default: 'New' }}</span>{% endif %}
           <span class="link-icon" aria-hidden="true"><i class="{{ link.icon }}"></i></span>
           <span class="link-text">{{ link.text }}</span>
         </a>
       {% endfor %}
     </nav>
 
-    <div class="card button-container">
+    <div class="button-container">
       <div class="button-group">
         {% for item in socials %}
           {% assign social = item.social %}
