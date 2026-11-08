@@ -170,7 +170,7 @@ socials:
       alt: "ZhgChgLi's Medium"
       target: "_blank"
   - social:
-      icon: "fa-brands fa-substack"
+      icon: "fa-solid fa-newspaper"
       url: "https://riccardodetorino.substack.com/"
       title: "Riccardo DeTorino Substack"
       alt: "Riccardo DeTorino Substack"
