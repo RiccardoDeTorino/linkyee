@@ -292,5 +292,7 @@ a { color: inherit; text-decoration: none; }
   50% { opacity: 0.45; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .link-latest-badge { animation: none; }
+  .link-latest-badge {
+    animation: latest-blink 1.6s steps(2, start) infinite;
+  }
 }
