@@ -182,7 +182,7 @@ socials:
       alt: "ZhgChgLi's Twitter"
       target: "_blank"
   - social:
-      icon: "fa-brands fa-linkedin"
+      icon: "fa-solid fa-pen-nib"
       url: "https://www.linkedin.com/in/zhgchgli/"
       title: "ZhgChgLi's LinkedIn"
       alt: "ZhgChgLi's LinkedIn"
