@@ -9,7 +9,7 @@
 # Theme — directory under ./themes/. Built-ins:
 #   default | minimal-mono | editorial-serif | neo-brutalism
 #   glassmorphism | terminal-retro | paper-card | newsprint
-theme: glassmorphism
+theme: terminal-retro
 
 # HTML <html lang> attribute
 lang: "en"
@@ -20,7 +20,7 @@ lang: "en"
 #   dark  — always render dark mode
 # Note: dark-first themes (e.g. terminal-retro) ignore "light" — their
 # whole identity is the dark palette.
-color_scheme: auto
+color_scheme: dark
 
 # -----------------------------------------------------------------------------
 # Plugins — every built-in plugin is shown below as a working example.
@@ -81,9 +81,9 @@ google_analytics_id:
 # -----------------------------------------------------------------------------
 # Profile header
 # -----------------------------------------------------------------------------
-title: "ZhgChgLi's Links"
+title: "Riccardo DeTorino Links"
 avatar: "./images/profile.jpeg"
-name: "@zhgchgli"
+name: "Riccardo DeTorino"
 tagline: >-
     An iOS, web, and automation developer from Taiwan 🇹🇼 who also loves sharing, traveling, and writing.
     Followed by {{ vars.GithubProfilePlugin['ZhgChgLi'].followers }} on GitHub across {{ vars.GithubProfilePlugin['ZhgChgLi'].repos }} public repos.
