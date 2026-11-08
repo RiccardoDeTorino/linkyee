@@ -170,10 +170,10 @@ socials:
       alt: "ZhgChgLi's Medium"
       target: "_blank"
   - social:
-      icon: "fa-brands fa-github"
-      url: "https://github.com/ZhgChgLi"
-      title: "ZhgChgLi's GitHub"
-      alt: "ZhgChgLi's GitHub"
+      icon: "fa-brands fa-substack"
+      url: "https://riccardodetorino.substack.com/"
+      title: "Riccardo DeTorino Substack"
+      alt: "Riccardo DeTorino Substack"
       target: "_blank"
   - social:
       icon: "fa-brands fa-twitter"
