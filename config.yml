@@ -164,7 +164,7 @@ links:
 # -----------------------------------------------------------------------------
 socials:
   - social:
-      icon: "fa-brands fa-medium"
+      icon: "fa-solid fa-envelope-open-text"
       url: "https://blog.zhgchg.li"
       title: "ZhgChgLi's Medium"
       alt: "ZhgChgLi's Medium"
