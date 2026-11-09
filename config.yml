@@ -139,6 +139,12 @@ socials:
       alt: "Riccardo DeTorino's Substack"
       target: "_blank"
   - social:
+      icon: "fa-brands fa-substack"
+      url: "https://unlikedvalentine.substack.com/"
+      title: "UnlikedValentine's Substack"
+      alt: "UnlikedValentine's Substack"
+      target: "_blank"
+  - social:
       icon: "fa-brands fa-twitter"
       url: "https://x.com/DeTorino33"
       title: "Riccardo DeTorino's Twitter"
