@@ -121,14 +121,14 @@ socials:
       target: "_blank"
   - social:
       icon: "fa-brands fa-twitter"
-      url: "https://twitter.com/zhgchgli"
-      title: "ZhgChgLi's Twitter"
-      alt: "ZhgChgLi's Twitter"
+      url: "https://x.com/DeTorino33"
+      title: "Riccardo DeTorino's Twitter"
+      alt: "Riccardo DeTorino's Twitter"
       target: "_blank"
   - social:
       icon: "fa-solid fa-pen-nib"
       url: "https://www.linkedin.com/in/zhgchgli/"
-      title: "ZhgChgLi's LinkedIn"
+      title: "Riccardo DeTorino's LinkedIn"
       alt: "ZhgChgLi's LinkedIn"
       target: "_blank"
   - social:
