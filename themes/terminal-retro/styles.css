@@ -95,7 +95,7 @@ a { color: inherit; text-decoration: none; }
   mix-blend-mode: var(--scanline-blend);
 }
 
-.container { width: 100%; max-width: 560px; }
+.container { width: 100%; max-width: 640px; }
 
 .window {
   background: var(--window-bg);
