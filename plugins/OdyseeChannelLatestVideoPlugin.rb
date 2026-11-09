@@ -1,6 +1,7 @@
 require_relative 'Plugin'
 require 'nokogiri'
 require 'time'
+require 'uri'
 
 # Fetch the latest video for one or more Odysee channels.
 # Accepts a channel URL, channel handle, or a raw slug. The plugin
@@ -41,7 +42,7 @@ class OdyseeChannelLatestVideoPlugin < Plugin
     channel_url = resolve_channel_url(input)
     return nil unless channel_url
 
-    feed_url = "#{channel_url.sub(%r{/*\z}, '')}/rss"
+    feed_url = build_feed_url(channel_url)
     res = http_get(feed_url, headers: {
       'User-Agent' => 'Mozilla/5.0 (compatible; linkyee Odysee reader; +https://github.com/ZhgChgLi/linkyee)'
     })
@@ -71,6 +72,17 @@ class OdyseeChannelLatestVideoPlugin < Plugin
     }
   end
 
+  # Odysee's RSS endpoint is /$/rss/<channel-path>, not <channel-path>/rss.
+  def build_feed_url(channel_url)
+    uri = URI.parse(channel_url)
+    channel_path = uri.path.to_s.sub(%r{\A/+}, '')
+    uri.scheme = 'https'
+    uri.path = "/$/rss/#{channel_path}"
+    uri.query = nil
+    uri.fragment = nil
+    uri.to_s
+  end
+
   def resolve_channel_url(input)
     str = input.to_s.strip
     return nil if str.empty?
@@ -88,7 +100,7 @@ class OdyseeChannelLatestVideoPlugin < Plugin
 
   def clean_url(url)
     uri = URI.parse(url)
-    return nil unless %w[http https].include?(uri.scheme)
+    return nil unless %w[http https].include?(uri.scheme) && uri.host == 'odysee.com'
 
     uri.query = nil
     uri.fragment = nil
