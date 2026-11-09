@@ -86,7 +86,7 @@ body::before {
   text-align: center;
   color: var(--muted);
   opacity: 0.2;
-  font-size: clamp(20px, 8vw, 100px);
+  font-size: clamp(14px, 3vw, 32px);
   white-space: nowrap;
   pointer-events: none;
 }
