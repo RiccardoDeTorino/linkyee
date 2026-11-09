@@ -44,32 +44,47 @@ class OdyseeChannelLatestVideoPlugin < Plugin
 
     feed_url = build_feed_url(channel_url)
     res = http_get(feed_url, headers: {
-      'User-Agent' => 'Mozilla/5.0 (compatible; linkyee Odysee reader; +https://github.com/ZhgChgLi/linkyee)'
+      'User-Agent' => 'Mozilla/5.0 (compatible; linkyee Odysee reader; +https://github.com/ZhgChgLi/linkyee)',
+      'Accept' => 'application/rss+xml, application/atom+xml, application/xml, text/xml, */*'
     })
-    return nil unless res.is_a?(Net::HTTPSuccess)
+    unless res.is_a?(Net::HTTPSuccess)
+      warn "[OdyseeChannelLatestVideoPlugin] Feed fetch failed for #{feed_url}: #{res&.code} #{res&.message}"
+      return nil
+    end
 
-    doc = Nokogiri::XML(res.body) do |config|
+    doc = Nokogiri::XML(res.body.to_s) do |config|
       config.nonet
       config.noblanks
     end
 
     channel = doc.at_xpath('//*[local-name()="channel"]/*[local-name()="title"]')&.text.to_s.strip
+    channel = doc.at_xpath('/*[local-name()="feed"]/*[local-name()="title"]')&.text.to_s.strip if channel.empty?
     entry = doc.at_xpath('//*[local-name()="item" or local-name()="entry"]')
-    return EMPTY.dup.merge('channel' => channel) unless entry
+    unless entry
+      detail = doc.errors.map(&:message).join('; ')
+      warn "[OdyseeChannelLatestVideoPlugin] No RSS items or Atom entries in #{feed_url}#{": #{detail}" unless detail.empty?}"
+      return EMPTY.dup.merge('channel' => channel)
+    end
 
     title = child_text(entry, 'title')
     url = preferred_link(entry)
-    published = first_present(entry, 'pubDate', 'updated', 'published')
-    thumbnail = thumbnail_for(entry)
+    if url.empty?
+      warn "[OdyseeChannelLatestVideoPlugin] Latest feed entry has no usable video URL (#{feed_url})"
+      return EMPTY.dup.merge('title' => title, 'channel' => channel)
+    end
 
+    published = first_present(entry, 'pubDate', 'updated', 'published')
     {
       'title' => title,
-      'url' => url.to_s,
+      'url' => url,
       'video_id' => parse_video_id(url),
-      'thumbnail' => thumbnail,
+      'thumbnail' => thumbnail_for(entry),
       'published' => normalize_date(published),
       'channel' => channel
     }
+  rescue StandardError => e
+    warn "[OdyseeChannelLatestVideoPlugin] Failed to parse #{feed_url}: #{e.class}: #{e.message}"
+    nil
   end
 
   # Odysee's RSS endpoint is /$/rss/<channel-path>, not <channel-path>/rss.
@@ -77,7 +92,7 @@ class OdyseeChannelLatestVideoPlugin < Plugin
     uri = URI.parse(channel_url)
     channel_path = uri.path.to_s.sub(%r{\A/+}, '')
     uri.scheme = 'https'
-    uri.path = "/$/rss/#{channel_path}"
+    uri.path = "/$/rss/#{channel_path}" unless channel_path.start_with?('$/rss/')
     uri.query = nil
     uri.fragment = nil
     uri.to_s
@@ -100,7 +115,7 @@ class OdyseeChannelLatestVideoPlugin < Plugin
 
   def clean_url(url)
     uri = URI.parse(url)
-    return nil unless %w[http https].include?(uri.scheme) && uri.host == 'odysee.com'
+    return nil unless %w[http https].include?(uri.scheme) && %w[odysee.com www.odysee.com].include?(uri.host)
 
     uri.query = nil
     uri.fragment = nil
@@ -117,17 +132,27 @@ class OdyseeChannelLatestVideoPlugin < Plugin
       href.empty? ? link_node.text.to_s.strip : href
     end
 
-    candidates.find { |candidate| usable_url?(candidate) } ||
-      node.at_xpath('./*[local-name()="guid"]')&.text.to_s.strip
+    candidates << node.at_xpath('./*[local-name()="guid"]')&.text.to_s.strip
+    candidates.each do |candidate|
+      normalized = normalize_video_url(candidate)
+      return normalized if normalized
+    end
+    ''
   end
 
-  def usable_url?(candidate)
-    return false if candidate.to_s.empty?
+  # RSS feeds may contain absolute links, protocol-relative URLs, or relative
+  # paths. Normalize those into absolute links so an empty/relative href never
+  # sends a visitor back to the GitHub Pages site.
+  def normalize_video_url(candidate)
+    return nil if candidate.to_s.empty?
 
     uri = URI.parse(candidate)
-    %w[http https].include?(uri.scheme) && !uri.host.to_s.empty?
+    uri = URI.join('https://odysee.com/', candidate) unless uri.host || candidate.start_with?('lbry://')
+    return nil unless %w[http https].include?(uri.scheme) && !uri.host.to_s.empty?
+
+    uri.to_s
   rescue URI::InvalidURIError
-    false
+    nil
   end
 
   def thumbnail_for(node)
