@@ -49,8 +49,7 @@ title: "Follow The White Rabbit"
 avatar: "./images/profile.jpeg"
 name: "Riccardo DeTorino"
 tagline: >-
-    An iOS, web, and automation developer from Taiwan 🇹🇼 who also loves sharing, traveling, and writing.
-    Followed by {{ vars.GithubProfilePlugin['ZhgChgLi'].followers }} on GitHub across {{ vars.GithubProfilePlugin['ZhgChgLi'].repos }} public repos.
+    Just a simple guy...
 
 links:
   - link:
