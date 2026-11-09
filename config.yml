@@ -60,7 +60,7 @@ plugins:
   # podcasts...). Returns an array of { title, url, date } per feed URL.
   # Iterate inside theme index.html with {% for item in vars.RSSFeedPlugin[...] %}.
   - RSSFeedPlugin:
-      - https://en.zhgchg.li/feed.xml
+      - https://riccardodetorino.substack.com/feed
 
   # Days until / since a target date. Hash-style — labels become keys.
   # Use as: {{ vars.CountdownPlugin.label.days }}, .target, .passed
@@ -141,11 +141,11 @@ links:
   # → uses RSSFeedPlugin (latest blog post). `latest: true` opts into the
   #   theme's "LATEST" badge styling.
   - link:
-      icon: "fa-solid fa-newspaper"
-      text: "{{ vars.RSSFeedPlugin['https://en.zhgchg.li/feed.xml'][0].title }}"
-      url: "{{ vars.RSSFeedPlugin['https://en.zhgchg.li/feed.xml'][0].url }}"
-      alt: "Latest blog post by ZhgChgLi"
-      title: "Latest blog post"
+      icon: "fa-brands fa-substack"
+      text: "{{ vars.RSSFeedPlugin['https://riccardodetorino.substack.com/feed'][0].title }}"
+      url: "{{ vars.RSSFeedPlugin['https://riccardodetorino.substack.com/feed'][0].url }}"
+      alt: "Latest post on Riccardo DeTorino's Substack"
+      title: "Latest Substack post"
       target: "_blank"
       latest: true
 
