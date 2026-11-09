@@ -127,10 +127,10 @@ links:
 
 socials:
   - social:
-      icon: "fa-solid fa-newspaper"
-      url: "https://blog.zhgchg.li"
-      title: "ZhgChgLi's Medium"
-      alt: "ZhgChgLi's Medium"
+      icon: "fa-brands fa-matrix"
+      url: "https://matrix.to/#/#thegoodthebadtheugly:unredacted.org"
+      title: "Matrix Space"
+      alt: "Matrix Space"
       target: "_blank"
   - social:
       icon: "fa-brands fa-substack"
