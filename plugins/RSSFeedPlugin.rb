@@ -42,15 +42,15 @@ class RSSFeedPlugin < Plugin
       return nil
     end
 
-    body = res.body.to_s
+     body = res.body.to_s.force_encoding("UTF-8")
     body = body.force_encoding("UTF-8")
-    body = body.encode("UTF-8", invalid: :replace, undef: :replace, replace: "�") if body.valid_encoding?
+    body = body.encode("UTF-8", invalid: :replace, undef: :replace, replace: "�")
 
-    doc = Nokogiri::XML(body) do |config|
+    doc = Nokogiri::XML(body) { |config| config.nonet }
       config.noent.noblanks
     end
 
-    items = doc.xpath('//item | //entry')
+    items = doc.xpath('//*[local-name()="item" or local-name()="entry"]')
     items.first(limit).map { |node| parse_item(node) }
   rescue StandardError => e
     warn "[RSSFeedPlugin] parse failed for #{url}: #{e.class}: #{e.message}"
