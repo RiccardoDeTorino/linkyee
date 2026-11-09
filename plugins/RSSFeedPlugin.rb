@@ -23,7 +23,6 @@ require 'time'
 #   {% for item in vars.RSSFeedPlugin['https://blog.zhgchg.li/feed'] %}
 #     {{ item.title }} — {{ item.date }}
 #   {% endfor %}
-# plugins/RSSFeedPlugin.rb
 class RSSFeedPlugin < Plugin
   DEFAULT_LIMIT = 5
 
@@ -42,12 +41,12 @@ class RSSFeedPlugin < Plugin
       return nil
     end
 
-     body = res.body.to_s.force_encoding("UTF-8")
-    body = body.force_encoding("UTF-8")
+    body = res.body.to_s.force_encoding("UTF-8")
     body = body.encode("UTF-8", invalid: :replace, undef: :replace, replace: "�")
 
-    doc = Nokogiri::XML(body) { |config| config.nonet }
-      config.noent.noblanks
+    doc = Nokogiri::XML(body) do |config|
+      config.nonet
+      config.noblanks
     end
 
     items = doc.xpath('//*[local-name()="item" or local-name()="entry"]')
@@ -57,7 +56,6 @@ class RSSFeedPlugin < Plugin
     warn e.backtrace.first(10).join("\n")
     nil
   end
-end
 
   def parse_item(node)
     title = (node.at_xpath('title') || node.at_xpath('xmlns:title'))&.text.to_s.strip
@@ -93,6 +91,7 @@ end
 
   def normalize_date(raw)
     return '' if raw.empty?
+
     Time.parse(raw).strftime('%Y-%m-%d')
   rescue ArgumentError
     raw[0, 10]
