@@ -41,7 +41,7 @@ plugins:
   - CountdownPlugin:
       linkyee_release: "2024-12-21"
   - YouTubeChannelLatestVideoPlugin:
-      - "@zhgchgli"
+      - "@TheGoodTheBadTheU.G.L.Y"
 
 google_analytics_id:
 
@@ -100,8 +100,8 @@ links:
       latest: true
   - link:
       icon: "fa-brands fa-youtube"
-      text: "{{ vars.YouTubeChannelLatestVideoPlugin['@zhgchgli'].title }}"
-      url: "{{ vars.YouTubeChannelLatestVideoPlugin['@zhgchgli'].url }}"
+      text: "{{ vars.YouTubeChannelLatestVideoPlugin['@TheGoodTheBadTheU.G.L.Y'].title }}"
+      url: "{{ vars.YouTubeChannelLatestVideoPlugin['@TheGoodTheBadTheU.G.L.Y'].url }}"
       alt: "Latest YouTube video"
       title: "Latest YouTube video"
       target: "_blank"
@@ -117,8 +117,8 @@ socials:
   - social:
       icon: "fa-brands fa-substack"
       url: "https://riccardodetorino.substack.com/"
-      title: "Riccardo DeTorino Substack"
-      alt: "Riccardo DeTorino Substack"
+      title: "Riccardo DeTorino's Substack"
+      alt: "Riccardo DeTorino's Substack"
       target: "_blank"
   - social:
       icon: "fa-brands fa-twitter"
