@@ -151,23 +151,23 @@ socials:
       alt: "Riccardo DeTorino's Twitter"
       target: "_blank"
 #  - social:
-      icon: "fa-solid fa-pen-nib"
-      url: "https://www.linkedin.com/in/zhgchgli/"
-      title: "Riccardo DeTorino's LinkedIn"
-      alt: "ZhgChgLi's LinkedIn"
-      target: "_blank"
+#     icon: "fa-solid fa-pen-nib"
+#     url: "https://www.linkedin.com/in/zhgchgli/"
+#     title: "Riccardo DeTorino's LinkedIn"
+#     alt: "ZhgChgLi's LinkedIn"
+#     target: "_blank"
 #  - social:
-      icon: "fa-brands fa-instagram"
-      url: "https://www.instagram.com/zhgchgli/"
-      title: "Instagram"
-      alt: "Instagram"
-      target: "_blank"
+#     icon: "fa-brands fa-instagram"
+#     url: "https://www.instagram.com/zhgchgli/"
+#     title: "Instagram"
+#     alt: "Instagram"
+#     target: "_blank"
 #  - social:
-      icon: "fa-solid fa-envelope"
-      url: "mailto:zhgchgli@gmail.com"
-      title: "Email: zhgchgli@gmail.com"
-      alt: "zhgchgli@gmail.com"
-      target: "_blank"
+#     icon: "fa-solid fa-envelope"
+#     url: "mailto:zhgchgli@gmail.com"
+#     title: "Email: zhgchgli@gmail.com"
+#     alt: "zhgchgli@gmail.com"
+#     target: "_blank"
 
 footer: >
 #    Hi there! Follow me on Medium or GitHub, or stay connected on Instagram or LinkedIn.
