@@ -53,9 +53,21 @@ class RSSFeedPlugin < Plugin
   def parse_item(node)
     title = (node.at_xpath('title') || node.at_xpath('xmlns:title'))&.text.to_s.strip
 
-    # RSS uses <link>text</link>; Atom uses <link href="..."/>.
-    link_node = node.at_xpath('link') || node.at_xpath('xmlns:link')
+    link_node =
+      node.at_xpath('link[@rel="alternate"]') ||
+      node.at_xpath('xmlns:link[@rel="alternate"]') ||
+      node.at_xpath('link[@href]') ||
+      node.at_xpath('xmlns:link[@href]') ||
+      node.at_xpath('link') ||
+      node.at_xpath('xmlns:link')
+
     link = link_node&.[]('href') || link_node&.text.to_s.strip
+
+    # Substack sometimes exposes the site root as the generic link; ignore that
+    # and let config fallback handle it if we cannot find a real article URL.
+    if link == 'https://riccardodetorino.substack.com/' || link == 'https://riccardodetorino.substack.com'
+      link = ''
+    end
 
     raw_date = (
       node.at_xpath('pubDate') ||
