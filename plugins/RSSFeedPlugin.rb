@@ -23,6 +23,7 @@ require 'time'
 #   {% for item in vars.RSSFeedPlugin['https://blog.zhgchg.li/feed'] %}
 #     {{ item.title }} — {{ item.date }}
 #   {% endfor %}
+# plugins/RSSFeedPlugin.rb
 class RSSFeedPlugin < Plugin
   DEFAULT_LIMIT = 5
 
@@ -36,19 +37,27 @@ class RSSFeedPlugin < Plugin
 
   def load_feed(url, limit)
     res = http_get(url)
-    return nil unless res.is_a?(Net::HTTPSuccess)
+    unless res.is_a?(Net::HTTPSuccess)
+      warn "[RSSFeedPlugin] Feed fetch failed for #{url}: #{res&.code} #{res&.message}"
+      return nil
+    end
 
-    doc = Nokogiri::XML(res.body)
+    body = res.body.to_s
+    body = body.force_encoding("UTF-8")
+    body = body.encode("UTF-8", invalid: :replace, undef: :replace, replace: "�") if body.valid_encoding?
 
-    # RSS 2.0: //item   /   Atom: //entry
-    items = doc.xpath('//item')
-    items = doc.xpath('//xmlns:entry') if items.empty?
+    doc = Nokogiri::XML(body) do |config|
+      config.noent.noblanks
+    end
 
+    items = doc.xpath('//item | //entry')
     items.first(limit).map { |node| parse_item(node) }
   rescue StandardError => e
-    log("parse failed for #{url}: #{e.message}")
+    warn "[RSSFeedPlugin] parse failed for #{url}: #{e.class}: #{e.message}"
+    warn e.backtrace.first(10).join("\n")
     nil
   end
+end
 
   def parse_item(node)
     title = (node.at_xpath('title') || node.at_xpath('xmlns:title'))&.text.to_s.strip
