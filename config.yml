@@ -61,7 +61,7 @@ links:
       title: "ZhgChgLi Tech & Travel Blog"
       target: "_blank"
   - link:
-      icon: "fa-brands fa-swift"
+      icon: "fa-light fa-eye-low-vision"
       text: "ZMarkupParser <span class='link-button-text'>({{vars.GithubRepoStarsCountPlugin['ZhgChgLi/ZMarkupParser']}} Stars)</span>"
       url: "https://github.com/ZhgChgLi/ZMarkupParser"
       alt: "ZMarkupParser is a pure-Swift library that helps you to convert HTML strings to NSAttributedString with customized style and tags."
