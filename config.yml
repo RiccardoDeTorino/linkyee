@@ -44,6 +44,8 @@ plugins:
   - YouTubeChannelLatestVideoPlugin:
       - "@TheGoodTheBadTheU.G.L.Y"
       - "@BehindTheVeil33"
+  - OdyseeChannelLatestVideoPlugin:
+      - "https://odysee.com/@BehindTheVeil33"
       
 google_analytics_id:
 
@@ -124,6 +126,14 @@ links:
       title: "Latest BehindTheVeil video"
       target: "_blank"
       latest: true
+  - link:
+      icon: "fa-brands fa-odysee"
+      text: "{{ vars.OdyseeChannelLatestVideoPlugin['https://odysee.com/@BehindTheVeil33'].title }}"
+      url: "{{ vars.OdyseeChannelLatestVideoPlugin['https://odysee.com/@BehindTheVeil33'].url }}"
+      alt: "Latest BehindTheVeil video"
+      title: "Latest BehindTheVeil video"
+      target: "_blank"
+      latest: true   
 
 socials:
   - social:
