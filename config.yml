@@ -42,7 +42,8 @@ plugins:
       linkyee_release: "2024-12-21"
   - YouTubeChannelLatestVideoPlugin:
       - "@TheGoodTheBadTheU.G.L.Y"
-
+      - "@BehindTheVeil33"
+      
 google_analytics_id:
 
 title: "Follow The White Rabbit"
@@ -102,6 +103,14 @@ links:
       icon: "fa-brands fa-youtube"
       text: "{{ vars.YouTubeChannelLatestVideoPlugin['@TheGoodTheBadTheU.G.L.Y'].title }}"
       url: "{{ vars.YouTubeChannelLatestVideoPlugin['@TheGoodTheBadTheU.G.L.Y'].url }}"
+      alt: "Latest YouTube video"
+      title: "Latest YouTube video"
+      target: "_blank"
+      latest: true
+  - link:
+      icon: "fa-brands fa-youtube"
+      text: "{{ vars.YouTubeChannelLatestVideoPlugin['@BehindTheVeil33'].title }}"
+      url: "{{ vars.YouTubeChannelLatestVideoPlugin['@BehindTheVeil33'].url }}"
       alt: "Latest YouTube video"
       title: "Latest YouTube video"
       target: "_blank"
