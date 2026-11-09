@@ -15,6 +15,11 @@ require 'uri'
 #   { "https://blog.example/feed" => [{ "title" => "...", "url" => "...", "date" => "2026-05-01" }] }
 class RSSFeedPlugin < Plugin
   DEFAULT_LIMIT = 5
+  FEED_HEADERS = {
+    'Accept' => 'application/rss+xml, application/atom+xml, application/xml, text/xml, */*',
+    # Some hosted feeds, including Substack, may reject generic script clients.
+    'User-Agent' => 'Mozilla/5.0 (compatible; linkyee RSS reader; +https://github.com/ZhgChgLi/linkyee)'
+  }.freeze
 
   def execute
     args.each_with_object({}) do |url, out|
@@ -25,7 +30,7 @@ class RSSFeedPlugin < Plugin
   private
 
   def load_feed(url, limit)
-    res = http_get(url, headers: { 'Accept' => 'application/rss+xml, application/atom+xml, application/xml, text/xml, */*' })
+    res = http_get(url, headers: FEED_HEADERS)
     unless res.is_a?(Net::HTTPSuccess)
       warn "[RSSFeedPlugin] Feed fetch failed for #{url}: #{res&.code} #{res&.message}"
       return nil
@@ -42,7 +47,8 @@ class RSSFeedPlugin < Plugin
     items = doc.xpath('//*[local-name()="item" or local-name()="entry"]')
     if items.empty?
       detail = doc.errors.map(&:message).join('; ')
-      warn "[RSSFeedPlugin] No RSS items or Atom entries found in #{url}#{": #{detail}" unless detail.empty?}"
+      content_type = res['content-type'].to_s
+      warn "[RSSFeedPlugin] No RSS items or Atom entries found in #{url} (content-type: #{content_type})#{": #{detail}" unless detail.empty?}"
       return nil
     end
 
