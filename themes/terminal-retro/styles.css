@@ -78,7 +78,7 @@ body {
   overflow-x: hidden;
 }
 body::before {
-  content: "\"Everything that has a beginning, has an end\"";
+  content: "\"Everything that has a beginning has an end\"";
   position: fixed;
   bottom: 12px;
   left: 0;
