@@ -77,6 +77,19 @@ body {
   position: relative;
   overflow-x: hidden;
 }
+body::before {
+  content: "Everything that has a beginning has an end";
+  position: fixed;
+  bottom: 12px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  color: var(--muted);
+  opacity: 0.2;
+  font-size: clamp(24px, 8vw, 100px);
+  white-space: nowrap;
+  pointer-events: none;
+}
 
 a { color: inherit; text-decoration: none; }
 
