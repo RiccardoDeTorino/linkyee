@@ -4,34 +4,7 @@ require 'json'
 require 'fileutils'
 
 # Base class for all linkyee plugins.
-#
-# A plugin is a Ruby class living under `./plugins/<ClassName>.rb` that is
-# enabled via `config.yml`:
-#
-#   plugins:
-#     - MyPlugin:
-#         - some
-#         - args
-#
-# At build time scaffold.rb instantiates `<PluginName>.new(<values from yaml>)`
-# and calls `execute`. Whatever `execute` returns is stored under
-# `vars.<PluginName>` and is then available inside `config.yml` and theme
-# templates as `{{ vars.<PluginName> }}` (Liquid).
-#
-# ─── Subclass contract ────────────────────────────────────────────────
-#
-# Subclasses MUST:
-#   - Inherit from Plugin (`class MyPlugin < Plugin`)
-#   - Be saved as `./plugins/MyPlugin.rb` (filename == class name)
-#   - Override `execute` and return a value Liquid can render
-#     (String, Numeric, Hash with String keys, Array, or nested combos).
-#
-# Subclasses SHOULD:
-#   - Use the helpers below (`http_get`, `http_get_json`, `http_post_json`, `log`, `cache`)
-#     instead of reaching for Net::HTTP directly. They follow redirects where
-#     appropriate, set a sensible User-Agent, and return safe defaults on failure.
-#   - Be defensive: a flaky external API should NOT break the whole build.
-#     If a fetch fails, return a safe default (0, "", {}, []).
+# Plugins implement `execute` and return data made available to Liquid as vars.<PluginName>.
 class Plugin
   attr_reader :data
 
@@ -52,63 +25,57 @@ class Plugin
     first.is_a?(Hash) ? first : {}
   end
 
-  # GET an HTTP(S) URL with redirect following. Returns Net::HTTPResponse,
-  # or nil on failure. Never raises.
+  # GET an HTTP(S) URL with redirect following. Returns a response or nil.
   def http_get(url, headers: {}, redirect_limit: 5, timeout: 15)
     return nil if redirect_limit <= 0
 
     uri = URI(url)
     req = Net::HTTP::Get.new(uri)
-    default_headers.merge(headers).each { |k, v| req[k] = v }
-
-    res = Net::HTTP.start(
+    default_headers.merge(headers).each { |key, value| req[key] = value }
+    response = Net::HTTP.start(
       uri.hostname, uri.port,
       use_ssl: uri.scheme == 'https',
       open_timeout: timeout, read_timeout: timeout
     ) { |http| http.request(req) }
 
-    case res
-    when Net::HTTPRedirection
-      http_get(res['location'], headers: headers, redirect_limit: redirect_limit - 1, timeout: timeout)
+    if response.is_a?(Net::HTTPRedirection)
+      http_get(response['location'], headers: headers, redirect_limit: redirect_limit - 1, timeout: timeout)
     else
-      res
+      response
     end
   rescue StandardError => e
     log("http_get(#{url}) failed: #{e.class}: #{e.message}")
     nil
   end
 
-  # GET a URL and parse the body as JSON. Returns parsed value, or `default`
-  # on failure (network, non-2xx, malformed JSON).
   def http_get_json(url, headers: {}, default: nil, **opts)
-    res = http_get(url, headers: { 'Accept' => 'application/json' }.merge(headers), **opts)
-    return default unless res.is_a?(Net::HTTPSuccess)
+    response = http_get(url, headers: { 'Accept' => 'application/json' }.merge(headers), **opts)
+    return default unless response.is_a?(Net::HTTPSuccess)
 
-    JSON.parse(res.body)
+    JSON.parse(response.body)
   rescue JSON::ParserError => e
     log("http_get_json(#{url}) parse failed: #{e.message}")
     default
   end
 
-  # POST a JSON payload and parse the JSON response. Returns `default` on
-  # network, HTTP, or JSON parsing failure.
+  # POST JSON and parse a JSON response. Returns `default` on any failure.
   def http_post_json(url, payload:, headers: {}, default: nil, timeout: 15)
     uri = URI(url)
-    req = Net::HTTP::Post.new(uri)
+    request = Net::HTTP::Post.new(uri)
     default_headers.merge(
       'Accept' => 'application/json',
       'Content-Type' => 'application/json'
-    ).merge(headers).each { |k, v| req[k] = v }
-    req.body = JSON.generate(payload)
+    ).merge(headers).each { |key, value| request[key] = value }
+    request.body = JSON.generate(payload)
 
-    res = Net::HTTP.start(
+    response = Net::HTTP.start(
       uri.hostname, uri.port,
       use_ssl: uri.scheme == 'https',
       open_timeout: timeout, read_timeout: timeout
-    ) { |http| http.request(req) }
-    return default unless res.is_a?(Net::HTTPSuccess)
+    ) { |http| http.request(request) }
+    return default unless response.is_a?(Net::HTTPSuccess)
 
-    JSON.parse(res.body)
+    JSON.parse(response.body)
   rescue JSON::ParserError => e
     log("http_post_json(#{url}) parse failed: #{e.message}")
     default
@@ -117,13 +84,13 @@ class Plugin
     default
   end
 
-  # Cache with stale-on-failure semantics — no TTL.
+  # Refresh on each build; fall back to the last successfully cached result.
   def cache(key)
     return Plugin.cache_store[key] if Plugin.cache_store.key?(key)
+
     path = Plugin.disk_cache_path(key)
     value = yield
-
-    if !value.nil?
+    unless value.nil?
       Plugin.cache_store[key] = value
       FileUtils.mkdir_p(File.dirname(path))
       File.write(path, JSON.generate(value))
@@ -137,14 +104,14 @@ class Plugin
         log("fetch failed for #{key}; using cached value")
         return cached
       rescue JSON::ParserError
-        # Corrupt cache file — fall through to nil.
+        # Ignore corrupt cached data.
       end
     end
     nil
   end
 
-  def log(msg)
-    warn "[#{self.class.name}] #{msg}"
+  def log(message)
+    warn "[#{self.class.name}] #{message}"
   end
 
   def self.cache_store
@@ -156,8 +123,7 @@ class Plugin
   end
 
   def self.disk_cache_path(key)
-    slug = key.gsub(/[^A-Za-z0-9._@-]+/, '--')
-    slug = slug[0, 200]
+    slug = key.gsub(/[^A-Za-z0-9._@-]+/, '--')[0, 200]
     File.join(disk_cache_dir, "#{slug}.json")
   end
 
