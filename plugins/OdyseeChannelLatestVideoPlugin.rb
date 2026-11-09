@@ -3,27 +3,8 @@ require 'nokogiri'
 require 'time'
 require 'uri'
 
-# Fetch the latest video for one or more Odysee channels.
-# Accepts a channel URL, channel handle, or a raw slug. The plugin
-# reads the public RSS feed exposed by Odysee.
-#
-# Example:
-#   plugins:
-#     - OdyseeChannelLatestVideoPlugin:
-#         - "@my-channel"
-#         - "https://odysee.com/@my-channel"
-#
-# Output (Hash<input, Hash>):
-#   {
-#     "@my-channel" => {
-#       "title" => "Latest title",
-#       "url" => "https://odysee.com/...",
-#       "video_id" => "...",
-#       "thumbnail" => "https://...",
-#       "published" => "2026-05-01",
-#       "channel" => "My Channel"
-#     }
-#   }
+# Fetch the latest video for one or more Odysee channels using their public RSS feed.
+# Accepts a channel URL, @handle, or raw channel slug.
 class OdyseeChannelLatestVideoPlugin < Plugin
   EMPTY = {
     'title' => '', 'url' => '', 'video_id' => '',
@@ -32,14 +13,18 @@ class OdyseeChannelLatestVideoPlugin < Plugin
 
   def execute
     args.each_with_object({}) do |input, out|
-      out[input] = cache("odysee-latest:#{input}") { load_latest(input) } || EMPTY.dup
+      channel_url = resolve_channel_url(input)
+      video = cache("odysee-latest:#{input}") { load_latest(channel_url) } || EMPTY.dup
+      # Do not emit href="" when Odysee's feed is unavailable or has an
+      # unexpected format. The channel page is a safe fallback, not the site root.
+      video = video.merge('url' => channel_url) if video['url'].to_s.empty? && channel_url
+      out[input] = video
     end
   end
 
   private
 
-  def load_latest(input)
-    channel_url = resolve_channel_url(input)
+  def load_latest(channel_url)
     return nil unless channel_url
 
     feed_url = build_feed_url(channel_url)
@@ -63,23 +48,29 @@ class OdyseeChannelLatestVideoPlugin < Plugin
     unless entry
       detail = doc.errors.map(&:message).join('; ')
       warn "[OdyseeChannelLatestVideoPlugin] No RSS items or Atom entries in #{feed_url}#{": #{detail}" unless detail.empty?}"
-      return EMPTY.dup.merge('channel' => channel)
+      return nil
     end
 
     title = child_text(entry, 'title')
     url = preferred_link(entry)
-    if url.empty?
-      warn "[OdyseeChannelLatestVideoPlugin] Latest feed entry has no usable video URL (#{feed_url})"
-      return EMPTY.dup.merge('title' => title, 'channel' => channel)
+    unless url
+      warn "[OdyseeChannelLatestVideoPlugin] No usable video link in latest feed item (#{feed_url}); linking to channel instead"
+      return {
+        'title' => title,
+        'url' => channel_url,
+        'video_id' => '',
+        'thumbnail' => thumbnail_for(entry),
+        'published' => normalize_date(first_present(entry, 'pubDate', 'updated', 'published')),
+        'channel' => channel
+      }
     end
 
-    published = first_present(entry, 'pubDate', 'updated', 'published')
     {
       'title' => title,
       'url' => url,
       'video_id' => parse_video_id(url),
       'thumbnail' => thumbnail_for(entry),
-      'published' => normalize_date(published),
+      'published' => normalize_date(first_present(entry, 'pubDate', 'updated', 'published')),
       'channel' => channel
     }
   rescue StandardError => e
@@ -126,28 +117,33 @@ class OdyseeChannelLatestVideoPlugin < Plugin
   end
 
   def preferred_link(node)
-    links = node.xpath('./*[local-name()="link"]')
-    candidates = links.map do |link_node|
+    candidates = node.xpath('./*[local-name()="link"]').map do |link_node|
       href = link_node['href'].to_s.strip
       href.empty? ? link_node.text.to_s.strip : href
     end
-
     candidates << node.at_xpath('./*[local-name()="guid"]')&.text.to_s.strip
     candidates.each do |candidate|
       normalized = normalize_video_url(candidate)
       return normalized if normalized
     end
-    ''
+    nil
   end
 
-  # RSS feeds may contain absolute links, protocol-relative URLs, or relative
-  # paths. Normalize those into absolute links so an empty/relative href never
-  # sends a visitor back to the GitHub Pages site.
+  # Odysee/LBRY feeds may use lbry:// links, protocol-relative URLs, or
+  # relative paths rather than absolute HTTP URLs.
   def normalize_video_url(candidate)
-    return nil if candidate.to_s.empty?
+    value = candidate.to_s.strip
+    return nil if value.empty?
 
-    uri = URI.parse(candidate)
-    uri = URI.join('https://odysee.com/', candidate) unless uri.host || candidate.start_with?('lbry://')
+    if value.start_with?('lbry://')
+      value = "https://odysee.com/#{value.delete_prefix('lbry://').sub(%r{\A/+}, '')}"
+    elsif value.start_with?('//')
+      value = "https:#{value}"
+    elsif !value.match?(%r{\Ahttps?://}i)
+      value = URI.join('https://odysee.com/', value).to_s
+    end
+
+    uri = URI.parse(value)
     return nil unless %w[http https].include?(uri.scheme) && !uri.host.to_s.empty?
 
     uri.to_s
@@ -163,8 +159,7 @@ class OdyseeChannelLatestVideoPlugin < Plugin
 
     return candidate.strip unless candidate.to_s.empty?
 
-    enclosure = node.at_xpath('./*[local-name()="enclosure"]')
-    enclosure&.[]('url').to_s.strip
+    node.at_xpath('./*[local-name()="enclosure"]')&.[]('url').to_s.strip
   end
 
   def child_text(node, name)
