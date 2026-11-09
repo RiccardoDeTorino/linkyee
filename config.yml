@@ -50,7 +50,7 @@ avatar: "./images/profile.jpeg"
 name: "Riccardo DeTorino"
 tagline: >-
     Just a simple guy...<br>
-    "Everything that has a beginning has an end"
+#    "Everything that has a beginning has an end"
 
 links:
   - link:
