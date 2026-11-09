@@ -67,7 +67,7 @@ links:
       alt: "ZMarkupParser is a pure-Swift library that helps you to convert HTML strings to NSAttributedString with customized style and tags."
       title: "ZMarkupParser is a pure-Swift library that helps you to convert HTML strings to NSAttributedString with customized style and tags."
       target: "_blank"
-  - link:
+#  - link:
       icon: "fa-brands fa-app-store-ios"
       text: "ZReviewTender <span class='link-button-text'>({{vars.GithubRepoStarsCountPlugin['ZhgChgLi/ZReviewTender']}} Stars)</span>"
       url: "https://github.com/ZhgChgLi/ZReviewTender"
