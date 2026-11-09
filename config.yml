@@ -142,8 +142,8 @@ links:
   #   theme's "LATEST" badge styling.
   - link:
       icon: "fa-brands fa-substack"
-      text: text: "{{ vars.RSSFeedPlugin['https://riccardodetorino.substack.com/feed'][0].title | default: 'Latest Substack post' }}"
-      url: url: "{{ vars.RSSFeedPlugin['https://riccardodetorino.substack.com/feed'][0].url | default: 'https://riccardodetorino.substack.com/' }}"
+      text: "{{ vars.RSSFeedPlugin['https://riccardodetorino.substack.com/feed'][0].title | default: 'Latest Substack post' }}"
+      url: "{{ vars.RSSFeedPlugin['https://riccardodetorino.substack.com/feed'][0].url | default: 'https://riccardodetorino.substack.com/' }}"
       alt: "Latest post on Riccardo DeTorino's Substack"
       title: "Latest Substack post"
       target: "_blank"
