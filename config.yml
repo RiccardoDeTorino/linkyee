@@ -140,7 +140,7 @@ links:
 
   # → uses RSSFeedPlugin (latest blog post). `latest: true` opts into the
   #   theme's "LATEST" badge styling.
-  - link:
+    - link:
       icon: "fa-brands fa-substack"
       text: "{{ vars.RSSFeedPlugin['https://riccardodetorino.substack.com/feed'][0].title | default: 'Latest Substack post' }}"
       url: "{{ vars.RSSFeedPlugin['https://riccardodetorino.substack.com/feed'][0].url | default: 'https://riccardodetorino.substack.com/' }}"
