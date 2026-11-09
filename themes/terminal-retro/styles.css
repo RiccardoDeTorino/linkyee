@@ -78,7 +78,7 @@ body {
   overflow-x: hidden;
 }
 body::before {
-  content: "Everything that has a beginning, has an end";
+  content: ""Everything that has a beginning has an end"";
   position: fixed;
   bottom: 12px;
   left: 0;
@@ -87,7 +87,7 @@ body::before {
   color: var(--muted);
   opacity: 0.25;
   font-size: clamp(18px, 3vw, 38px);
-  line-height: 1.2;
+  line-height: 1.5;
   white-space: normal;
   pointer-events: none;
 }
