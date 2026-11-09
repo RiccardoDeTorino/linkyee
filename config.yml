@@ -6,26 +6,10 @@
 # `plugins/README.md` for the full plugin developer wiki.
 # =============================================================================
 
-# Theme — directory under ./themes/. Built-ins:
-#   default | minimal-mono | editorial-serif | neo-brutalism
-#   glassmorphism | terminal-retro | paper-card | newsprint
 theme: terminal-retro
-
-# HTML <html lang> attribute
 lang: "en"
-
-# Force a color scheme regardless of the visitor's system appearance:
-#   auto  — follow OS (default; the page auto-switches between light/dark)
-#   light — always render light mode
-#   dark  — always render dark mode
-# Note: dark-first themes (e.g. terminal-retro) ignore "light" — their
-# whole identity is the dark palette.
 color_scheme: dark
 
-# -----------------------------------------------------------------------------
-# Plugins — every built-in plugin is shown below as a working example.
-# Use repository secrets for any API credentials; never commit them here.
-# -----------------------------------------------------------------------------
 plugins:
   - GithubRepoStarsCountPlugin:
       - ZhgChgLi/ZMarkupParser
@@ -46,54 +30,15 @@ plugins:
       - "@BehindTheVeil33"
   - OdyseeChannelLatestVideoPlugin:
       - "@BehindTheVeil33"
-      
-google_analytics_id:
 
+google_analytics_id:
 title: "Follow The White Rabbit"
 avatar: "./images/profile.jpeg"
 name: "Riccardo DeTorino"
 tagline: >-
-    Just a simple guy...<br>
-#    "Everything that has a beginning has an end"
+  Just a simple guy...<br>
 
 links:
-#  - link:
-#      icon: "fa-solid fa-rss"
-#     text: "Tech Blog <span class='link-button-text'>(120+ Posts)</span>"
-#     url: "https://zhgchg.li"
-#      alt: "ZhgChgLi Tech & Travel Blog"
-#      title: "ZhgChgLi Tech & Travel Blog"
-#      target: "_blank"
-#  - link:
-#     icon: "fa-solid fa-eye-low-vision"
-#      text: "ZMarkupParser <span class='link-button-text'>({{vars.GithubRepoStarsCountPlugin['ZhgChgLi/ZMarkupParser']}} Stars)</span>"
-#      url: "https://github.com/ZhgChgLi/ZMarkupParser"
-#      alt: "ZMarkupParser is a pure-Swift library that helps you to convert HTML strings to NSAttributedString with customized style and tags."
-#      title: "ZMarkupParser is a pure-Swift library that helps you to convert HTML strings to NSAttributedString with customized style and tags."
-#      target: "_blank"
-#  - link:
-#      icon: "fa-brands fa-app-store-ios"
-#      text: "ZReviewTender <span class='link-button-text'>({{vars.GithubRepoStarsCountPlugin['ZhgChgLi/ZReviewTender']}} Stars)</span>"
-#      url: "https://github.com/ZhgChgLi/ZReviewTender"
-#      alt: "ZReviewTender is a tool for fetching app reviews from the App Store and Google Play Console and integrating them into your workflow."
-#      title: "ZReviewTender is a tool for fetching app reviews from the App Store and Google Play Console and integrating them into your workflow."
-#      target: "_blank"
-#  - link:
-#      icon: "fa-brands fa-markdown"
-#      text: "ZMediumToMarkdown <span class='link-button-text'>({{vars.GithubRepoStarsCountPlugin['ZhgChgLi/ZMediumToMarkdown']}} Stars)</span>"
-#      url: "https://github.com/ZhgChgLi/ZMediumToMarkdown"
-#      alt: "ZMediumToMarkdown is a powerful tool that allows you to effortlessly download and convert your Medium posts to Markdown format."
-#      title: "ZMediumToMarkdown is a powerful tool that allows you to effortlessly download and convert your Medium posts to Markdown format."
-#      target: "_blank"
-#  - link:
-#      icon: "fa-brands fa-github"
-#      text: "linkyee <span class='link-button-text'>({{vars.GithubRepoStarsCountPlugin['ZhgChgLi/linkyee']}} ⭐ · last update {{ vars.GithubLastCommitPlugin['ZhgChgLi/linkyee'].date }})</span>"
-#      url: "https://github.com/ZhgChgLi/linkyee"
-#      alt: "linkyee is a fully customized, open-source LinkTree alternative deployed directly on GitHub Pages."
-#      title: "linkyee is a fully customized, open-source LinkTree alternative deployed directly on GitHub Pages."
-#      target: "_blank"
-  # The RSS values are dynamic. Keep a last-known post as fallback so a
-  # temporary feed fetch/parse failure never sends visitors to the publication home.
   - link:
       icon: "fa-brands fa-substack"
       text: "{{ vars.RSSFeedPlugin['https://riccardodetorino.substack.com/feed'][0].title | default: 'The Ninety-Day Ratchet' }}"
@@ -128,12 +73,12 @@ links:
       latest: true
   - link:
       icon: "fa-brands fa-odysee"
-      text: "{{ vars.OdyseeChannelLatestVideoPlugin['https://odysee.com/@BehindTheVeil33'].title }}"
-      url: "{{ vars.OdyseeChannelLatestVideoPlugin['https://odysee.com/@BehindTheVeil33'].url }}"
-      alt: "Latest BehindTheVeil video"
-      title: "Latest BehindTheVeil video"
+      text: "{{ vars.OdyseeChannelLatestVideoPlugin['@BehindTheVeil33'].title }}"
+      url: "{{ vars.OdyseeChannelLatestVideoPlugin['@BehindTheVeil33'].url }}"
+      alt: "Latest BehindTheVeil Odysee video"
+      title: "Latest BehindTheVeil Odysee video"
       target: "_blank"
-      latest: true   
+      latest: true
 
 socials:
   - social:
@@ -142,46 +87,14 @@ socials:
       title: "Matrix Space"
       alt: "Matrix Space"
       target: "_blank"
-#  - social:
-#      icon: "fa-brands fa-substack"
-#      url: "https://riccardodetorino.substack.com/"
-#      title: "Riccardo DeTorino's Substack"
-#     alt: "Riccardo DeTorino's Substack"
-#      target: "_blank"
-#  - social:
-#      icon: "fa-brands fa-substack"
-#      url: "https://unlikedvalentine.substack.com/"
-#      title: "UnlikedValentine's Substack"
-#      alt: "UnlikedValentine's Substack"
-#      target: "_blank"
   - social:
       icon: "fa-brands fa-twitter"
       url: "https://x.com/DeTorino33"
       title: "Riccardo DeTorino's Twitter"
       alt: "Riccardo DeTorino's Twitter"
       target: "_blank"
-#  - social:
-#     icon: "fa-solid fa-pen-nib"
-#     url: "https://www.linkedin.com/in/zhgchgli/"
-#     title: "Riccardo DeTorino's LinkedIn"
-#     alt: "ZhgChgLi's LinkedIn"
-#     target: "_blank"
-#  - social:
-#     icon: "fa-brands fa-instagram"
-#     url: "https://www.instagram.com/zhgchgli/"
-#     title: "Instagram"
-#     alt: "Instagram"
-#     target: "_blank"
-#  - social:
-#     icon: "fa-solid fa-envelope"
-#     url: "mailto:zhgchgli@gmail.com"
-#     title: "Email: zhgchgli@gmail.com"
-#     alt: "zhgchgli@gmail.com"
-#     target: "_blank"
 
 footer: >
-#    Hi there! Follow me on Medium or GitHub, or stay connected on Instagram or LinkedIn.
-#    <br>linkyee has been live for {{ vars.CountdownPlugin.linkyee_release.days }} days. 🎉
 
 copyright: >
   © {{ year }} <a href="https://link.zhgchg.li" target="_blank">ZhgChgLi</a>. Powered by <a href="https://github.com/ZhgChgLi/linkyee" target="_blank">linkyee</a>
