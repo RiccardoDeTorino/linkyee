@@ -38,6 +38,7 @@ plugins:
       - ZhgChgLi
   - RSSFeedPlugin:
       - https://riccardodetorino.substack.com/feed
+      - https://unlikedvalentine.substack.com/feed
   - CountdownPlugin:
       linkyee_release: "2024-12-21"
   - YouTubeChannelLatestVideoPlugin:
@@ -95,6 +96,14 @@ links:
       icon: "fa-brands fa-substack"
       text: "{{ vars.RSSFeedPlugin['https://riccardodetorino.substack.com/feed'][0].title | default: 'The Ninety-Day Ratchet' }}"
       url: "{{ vars.RSSFeedPlugin['https://riccardodetorino.substack.com/feed'][0].url | default: 'https://riccardodetorino.substack.com/p/the-ninety-day-ratchet' }}"
+      alt: "Latest post on Riccardo DeTorino's Substack"
+      title: "Latest Substack post"
+      target: "_blank"
+      latest: true
+  - link:
+      icon: "fa-brands fa-substack"
+      text: "{{ vars.RSSFeedPlugin['https://unlikedvalentine.substack.com/feed'][0].title | default: 'The Invisible Template' }}"
+      url: "{{ vars.RSSFeedPlugin['https://unlikedvalentine.substack.com//feed'][0].url | default: 'https://unlikedvalentine.substack.com/p/the-invisible-template' }}"
       alt: "Latest post on Riccardo DeTorino's Substack"
       title: "Latest Substack post"
       target: "_blank"
