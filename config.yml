@@ -45,7 +45,7 @@ plugins:
       - "@TheGoodTheBadTheU.G.L.Y"
       - "@BehindTheVeil33"
   - OdyseeChannelLatestVideoPlugin:
-      - "https://odysee.com/@BehindTheVeil33"
+      - "@BehindTheVeil33"
       
 google_analytics_id:
 
