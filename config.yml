@@ -155,8 +155,8 @@ socials:
       target: "_blank"
 
 footer: >
-    Hi there! Follow me on Medium or GitHub, or stay connected on Instagram or LinkedIn.
-    <br>linkyee has been live for {{ vars.CountdownPlugin.linkyee_release.days }} days. 🎉
+#    Hi there! Follow me on Medium or GitHub, or stay connected on Instagram or LinkedIn.
+#    <br>linkyee has been live for {{ vars.CountdownPlugin.linkyee_release.days }} days. 🎉
 
 copyright: >
   © {{ year }} <a href="https://link.zhgchg.li" target="_blank">ZhgChgLi</a>. Powered by <a href="https://github.com/ZhgChgLi/linkyee" target="_blank">linkyee</a>
