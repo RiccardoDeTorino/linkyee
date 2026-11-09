@@ -104,7 +104,7 @@ links:
       icon: "fa-brands fa-substack"
       text: "{{ vars.RSSFeedPlugin['https://unlikedvalentine.substack.com/feed'][0].title | default: 'The Invisible Template' }}"
       url: "{{ vars.RSSFeedPlugin['https://unlikedvalentine.substack.com//feed'][0].url | default: 'https://unlikedvalentine.substack.com/p/the-invisible-template' }}"
-      alt: "Latest post on Riccardo DeTorino's Substack"
+      alt: "Latest post on UnlikedValentine's Substack"
       title: "Latest Substack post"
       target: "_blank"
       latest: true
@@ -112,16 +112,16 @@ links:
       icon: "fa-brands fa-youtube"
       text: "{{ vars.YouTubeChannelLatestVideoPlugin['@TheGoodTheBadTheU.G.L.Y'].title }}"
       url: "{{ vars.YouTubeChannelLatestVideoPlugin['@TheGoodTheBadTheU.G.L.Y'].url }}"
-      alt: "Latest YouTube video"
-      title: "Latest YouTube video"
+      alt: "Latest TheGoodTheBadTheU.G.L.Y video"
+      title: "Latest TheGoodTheBadTheU.G.L.Y video"
       target: "_blank"
       latest: true
   - link:
       icon: "fa-brands fa-youtube"
       text: "{{ vars.YouTubeChannelLatestVideoPlugin['@BehindTheVeil33'].title }}"
       url: "{{ vars.YouTubeChannelLatestVideoPlugin['@BehindTheVeil33'].url }}"
-      alt: "Latest YouTube video"
-      title: "Latest YouTube video"
+      alt: "Latest BehindTheVeil video"
+      title: "Latest BehindTheVeil video"
       target: "_blank"
       latest: true
 
