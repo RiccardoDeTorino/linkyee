@@ -82,7 +82,7 @@ links:
   - link:
       icon: "fa-solid fa-mug-hot"
       text: "Buy Me a Coffee"
-      url: "https://www.buymeacoffee.com/yourusername" # Replace with your Buy Me a Coffee profile URL
+      url: "https://buymeacoffee.com/riccardodetorino"
       alt: "Support Riccardo DeTorino on Buy Me a Coffee"
       title: "Buy Me a Coffee"
       target: "_blank"
@@ -99,6 +99,12 @@ socials:
       url: "https://x.com/DeTorino33"
       title: "Riccardo DeTorino's Twitter"
       alt: "Riccardo DeTorino's Twitter"
+      target: "_blank"
+  - social:
+      icon: "fa-regular fa-envelope"
+      url: "mailto:riccardodetorino@tutanota.com"
+      title: "Riccardo DeTorino's Email"
+      alt: "Riccardo DeTorino's Email"
       target: "_blank"
 
 footer: >
