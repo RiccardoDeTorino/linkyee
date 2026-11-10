@@ -26,8 +26,8 @@ plugins:
   - CountdownPlugin:
       linkyee_release: "2024-12-21"
   - YouTubeChannelLatestVideoPlugin:
-      - "https://www.youtube.com/@TheGoodTheBadTheU.G.L.Y"
-      - "https://www.youtube.com/@BehindTheVeil33"
+      - "@TheGoodTheBadTheU.G.L.Y"
+      - "@BehindTheVeil33"
   - OdyseeChannelLatestVideoPlugin:
       - "@BehindTheVeil33"
 
