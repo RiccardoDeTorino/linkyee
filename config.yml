@@ -100,6 +100,12 @@ socials:
       title: "Riccardo DeTorino's Twitter"
       alt: "Riccardo DeTorino's Twitter"
       target: "_blank"
+  - social:
+      icon: "fa-regular fa-envelope"
+      url: "riccardodetorino@tutanota.com"
+      title: "Riccardo DeTorino's Email"
+      alt: "Riccardo DeTorino's Email"
+      target: "_blank"
 
 footer: >
 
