@@ -6,6 +6,11 @@ require 'time'
 # Uses YouTube's public Atom feed — no API key required.
 # Accepts a channel ID, handle, or YouTube channel URL.
 class YouTubeChannelLatestVideoPlugin < Plugin
+  BROWSER_HEADERS = {
+    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+    'Accept-Language' => 'en-US,en;q=0.9'
+  }.freeze
+
   EMPTY = {
     'title' => '', 'url' => '', 'video_id' => '',
     'thumbnail' => '', 'published' => '', 'channel' => ''
@@ -15,8 +20,7 @@ class YouTubeChannelLatestVideoPlugin < Plugin
     args.each_with_object({}) do |input, out|
       channel_url = channel_page_url(input)
       video = cache("yt-latest:#{input}") { load_latest(input) } || EMPTY.dup
-      # Keep the link useful if YouTube blocks channel resolution or the feed
-      # is unavailable: fall back to the channel page rather than href="".
+      # Retain a useful channel link only if the latest-video lookup failed.
       video = video.merge('url' => channel_url) if video['url'].to_s.empty? && channel_url
       out[input] = video
     end
@@ -27,14 +31,14 @@ class YouTubeChannelLatestVideoPlugin < Plugin
   def load_latest(input)
     channel_id = resolve_channel_id(input)
     unless channel_id
-      log("could not resolve YouTube channel #{input.inspect}; using channel URL fallback")
+      log("could not resolve channel ID for #{input.inspect}; check YouTube response in this build")
       return nil
     end
 
     feed_url = "https://www.youtube.com/feeds/videos.xml?channel_id=#{URI.encode_www_form_component(channel_id)}"
     res = http_get(feed_url)
     unless res.is_a?(Net::HTTPSuccess)
-      log("video feed fetch failed for #{input.inspect}: #{res&.code} #{res&.message}")
+      log("Atom feed request failed for #{input.inspect}: #{res&.code} #{res&.message}")
       return nil
     end
 
@@ -42,17 +46,17 @@ class YouTubeChannelLatestVideoPlugin < Plugin
       config.nonet
       config.noblanks
     end
-    channel = doc.at_xpath('//xmlns:feed/xmlns:title')&.text.to_s.strip
-    entry = doc.at_xpath('//xmlns:feed/xmlns:entry')
+    channel = doc.at_xpath('//*[local-name()="feed"]/*[local-name()="title"]')&.text.to_s.strip
+    entry = doc.at_xpath('//*[local-name()="feed"]/*[local-name()="entry"]')
     unless entry
-      log("video feed contained no entries for #{input.inspect}; using channel URL fallback")
+      log("Atom feed returned no entries for #{input.inspect}")
       return EMPTY.dup.merge('channel' => channel)
     end
 
-    video_id = entry.at_xpath('yt:videoId', 'yt' => 'http://www.youtube.com/xml/schemas/2015')&.text.to_s.strip
-    title = entry.at_xpath('xmlns:title')&.text.to_s.strip
-    published = entry.at_xpath('xmlns:published')&.text.to_s
-    feed_link = entry.at_xpath('xmlns:link')&.[]('href').to_s
+    video_id = entry.at_xpath('.//*[local-name()="videoId"]')&.text.to_s.strip
+    title = entry.at_xpath('./*[local-name()="title"]')&.text.to_s.strip
+    published = entry.at_xpath('./*[local-name()="published"]')&.text.to_s
+    feed_link = entry.xpath('./*[local-name()="link"]').find { |node| node['rel'].to_s.empty? || node['rel'] == 'alternate' }&.[]('href').to_s
     video_url = video_id.empty? ? '' : "https://www.youtube.com/watch?v=#{video_id}"
     video_url = feed_link if video_url.empty? && valid_youtube_url?(feed_link)
 
@@ -71,11 +75,11 @@ class YouTubeChannelLatestVideoPlugin < Plugin
 
   # Accept channel_id (UC…), handle (@name), or YouTube URL → channel_id.
   # Resolution is disk-cached so transient network failures can use the last
-  # successful channel ID.
+  # successfully resolved ID.
   def resolve_channel_id(input)
     cache("yt:resolve:#{input}") do
       str = input.to_s.strip
-      return str if str.match?(/\AUC[A-Za-z0-9_-]{20,}\z/)
+      return str if valid_channel_id?(str)
 
       url = if str.start_with?('http://', 'https://')
               str
@@ -85,26 +89,44 @@ class YouTubeChannelLatestVideoPlugin < Plugin
               "https://www.youtube.com/@#{str}"
             end
 
-      if (match = url.match(%r{youtube\.com/channel/(UC[A-Za-z0-9_-]+)}))
-        next match[1]
+      direct_id = channel_id_from_text(url)
+      next direct_id if direct_id
+
+      res = http_get(url, headers: BROWSER_HEADERS)
+      unless res.is_a?(Net::HTTPSuccess)
+        log("channel page request failed for #{url}: #{res&.code} #{res&.message}")
+        next nil
       end
 
-      res = http_get(url, headers: { 'User-Agent' => 'Mozilla/5.0' })
-      next nil unless res.is_a?(Net::HTTPSuccess)
-
-      match = res.body.match(%r{youtube\.com/channel/(UC[A-Za-z0-9_-]{10,})}) ||
-              res.body.match(/"channelId":"(UC[A-Za-z0-9_-]+)"/) ||
-              res.body.match(/itemprop="channelId" content="(UC[A-Za-z0-9_-]+)"/) ||
-              res.body.match(/\b(UC[A-Za-z0-9_-]{20,24})\b/)
-      match && match[1]
+      channel_id_from_text(res.body)
     end
+  end
+
+  def channel_id_from_text(text)
+    source = text.to_s
+    patterns = [
+      %r{youtube\.com/channel/(UC[A-Za-z0-9_-]{20,})},
+      /["'](?:channelId|externalId|browseId|channel_id)["']\s*:\s*["'](UC[A-Za-z0-9_-]{20,})["']/, 
+      /itemprop=["']channelId["']\s+content=["'](UC[A-Za-z0-9_-]{20,})["']/, 
+      /data-channel-external-id=["'](UC[A-Za-z0-9_-]{20,})["']/, 
+      /\b(UC[A-Za-z0-9_-]{22})\b/
+    ]
+    patterns.each do |pattern|
+      match = source.match(pattern)
+      return match[1] if match && valid_channel_id?(match[1])
+    end
+    nil
+  end
+
+  def valid_channel_id?(value)
+    value.to_s.match?(/\AUC[A-Za-z0-9_-]{20,24}\z/)
   end
 
   def channel_page_url(input)
     value = input.to_s.strip
     return nil if value.empty?
 
-    if value.match?(/\AUC[A-Za-z0-9_-]{20,}\z/)
+    if valid_channel_id?(value)
       "https://www.youtube.com/channel/#{value}"
     elsif value.start_with?('http://', 'https://')
       uri = URI.parse(value)
