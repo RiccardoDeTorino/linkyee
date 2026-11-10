@@ -84,8 +84,8 @@ class RSSFeedPlugin < Plugin
     raw_date = child_text(node, 'published') if raw_date.empty?
 
     {
-      'title' => title,
-      'url' => link.to_s,
+      'title' => title.empty? ? nil : title,
+      'url' => link.nil? ? nil : link.to_s.strip.empty? ? nil : link.to_s,
       'date' => normalize_date(raw_date)
     }
   end

@@ -37,9 +37,14 @@ class GithubLastCommitPlugin < Plugin
     entry = doc.at_xpath('//xmlns:entry')
     return nil unless entry
 
-    sha = entry.at_xpath('xmlns:id')&.text.to_s.split('/').last.to_s[0, 7]
-    date = entry.at_xpath('xmlns:updated')&.text.to_s[0, 10]
-    title = entry.at_xpath('xmlns:title')&.text.to_s.strip
-    { 'sha' => sha, 'date' => date, 'message' => title }
+    sha_raw = entry.at_xpath('xmlns:id')&.text.to_s
+    date_raw = entry.at_xpath('xmlns:updated')&.text.to_s
+    title_raw = entry.at_xpath('xmlns:title')&.text.to_s
+
+    {
+      'sha' => sha_raw.empty? ? nil : sha_raw.split('/').last[0, 7],
+      'date' => date_raw.empty? ? nil : date_raw[0, 10],
+      'message' => title_raw.strip.empty? ? nil : title_raw.strip
+    }
   end
 end

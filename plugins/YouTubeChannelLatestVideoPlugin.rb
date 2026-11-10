@@ -54,12 +54,12 @@ class YouTubeChannelLatestVideoPlugin < Plugin
     end
 
     {
-      'title' => title,
-      'url' => url,
-      'video_id' => video_id,
-      'thumbnail' => video_id.empty? ? '' : "https://i.ytimg.com/vi/#{video_id}/hqdefault.jpg",
+      'title' => title.empty? ? nil : title,
+      'url' => url.empty? ? nil : url,
+      'video_id' => video_id.empty? ? nil : video_id,
+      'thumbnail' => video_id.empty? ? nil : "https://i.ytimg.com/vi/#{video_id}/hqdefault.jpg",
       'published' => normalize_date(published),
-      'channel' => channel_name
+      'channel' => channel_name.empty? ? nil : channel_name
     }
   rescue StandardError => e
     log("latest-video lookup for #{input.inspect} failed: #{e.class}: #{e.message}")
@@ -148,7 +148,7 @@ class YouTubeChannelLatestVideoPlugin < Plugin
   end
 
   def normalize_date(raw)
-    return '' if raw.to_s.empty?
+    return nil if raw.to_s.empty?
 
     Time.parse(raw).strftime('%Y-%m-%d')
   rescue ArgumentError

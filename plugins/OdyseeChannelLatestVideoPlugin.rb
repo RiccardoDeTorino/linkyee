@@ -74,12 +74,12 @@ class OdyseeChannelLatestVideoPlugin < Plugin
     channel_name = (claim['name'] || claim['value']&.[]('title') || channel).to_s
 
     {
-      'title' => title,
+      'title' => title.empty? ? nil : title,
       'url' => url.empty? ? fallback_video_url(video, channel_name) : url,
-      'video_id' => (video['claim_id'] || value['video_id'] || '').to_s,
-      'thumbnail' => thumbnail_url(value, video),
+      'video_id' => (video['claim_id'] || value['video_id'] || '').to_s.strip.empty? ? nil : (video['claim_id'] || value['video_id'] || '').to_s.strip,
+      'thumbnail' => (thumb = thumbnail_url(value, video)).empty? ? nil : thumb,
       'published' => normalize_date(video['timestamp'] || video['release_time']),
-      'channel' => channel_name.sub(%r{\A@}, '')
+      'channel' => channel_name.sub(%r{\A@}, '').empty? ? nil : channel_name.sub(%r{\A@}, '')
     }
   rescue StandardError => e
     log("Odysee lookup failed: #{e.class}: #{e.message}")
@@ -181,8 +181,9 @@ class OdyseeChannelLatestVideoPlugin < Plugin
 
   def thumbnail_url(value, video)
     thumb = value['thumbnail'] || video['thumbnail']
-    return thumb['url'].to_s if thumb.is_a?(Hash)
-    thumb.to_s
+    return nil unless thumb
+    return thumb['url'].to_s.strip.empty? ? nil : thumb['url'].to_s if thumb.is_a?(Hash)
+    thumb.to_s.strip.empty? ? nil : thumb.to_s
   end
 
   def normalize_channel_input(input)
