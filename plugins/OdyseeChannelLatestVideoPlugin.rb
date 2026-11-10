@@ -26,8 +26,8 @@ class OdyseeChannelLatestVideoPlugin < Plugin
   API_URL = 'https://api.na-backend.odysee.com/api/v1/proxy'.freeze
 
   EMPTY = {
-    'title' => '', 'url' => '', 'video_id' => '',
-    'thumbnail' => '', 'published' => '', 'channel' => ''
+    'title' => nil, 'url' => nil, 'video_id' => nil,
+    'thumbnail' => nil, 'published' => nil, 'channel' => nil
   }.freeze
 
   def execute
@@ -152,28 +152,28 @@ class OdyseeChannelLatestVideoPlugin < Plugin
 
   def normalize_video_url(value)
     url = value.to_s.strip
-    return '' if url.empty?
+    return nil if url.empty?
 
     if url.start_with?('lbry://')
       url.sub!(%r{\A(lbry://)}, '')
       url = "https://odysee.com/#{url.tr('#', ':')}"
     elsif url.start_with?('http://', 'https://')
       uri = URI.parse(url)
-      return '' unless %w[odysee.com www.odysee.com].include?(uri.host)
+      return nil unless %w[odysee.com www.odysee.com].include?(uri.host)
     else
-      return ''
+      return nil
     end
 
     url
   rescue URI::InvalidURIError
-    ''
+    nil
   end
 
   def fallback_video_url(video, channel_name)
     name = video['name'].to_s.strip
     claim_id = video['claim_id'].to_s.strip
     channel = channel_name.to_s.strip
-    return '' if name.empty? || claim_id.empty? || channel.empty?
+    return nil if name.empty? || claim_id.empty? || channel.empty?
 
     channel = "@#{channel}" unless channel.start_with?('@')
     "https://odysee.com/#{channel}/#{name}:#{claim_id}"
@@ -205,7 +205,7 @@ class OdyseeChannelLatestVideoPlugin < Plugin
   end
 
   def normalize_date(raw)
-    return '' if raw.to_s.empty?
+    return nil if raw.to_s.empty?
     return Time.at(raw.to_f).utc.strftime('%Y-%m-%d') if raw.to_s.match?(/\A\d+(?:\.\d+)?\z/)
 
     Time.parse(raw.to_s).strftime('%Y-%m-%d')

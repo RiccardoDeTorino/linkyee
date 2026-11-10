@@ -50,7 +50,7 @@ links:
   - link:
       icon: "fa-brands fa-substack"
       text: "{{ vars.RSSFeedPlugin['https://unlikedvalentine.substack.com/feed'][0].title | default: 'The Invisible Template' }}"
-      url: "{{ vars.RSSFeedPlugin['https://unlikedvalentine.substack.com//feed'][0].url | default: 'https://unlikedvalentine.substack.com/p/the-invisible-template' }}"
+      url: "{{ vars.RSSFeedPlugin['https://unlikedvalentine.substack.com/feed'][0].url | default: 'https://unlikedvalentine.substack.com/p/the-invisible-template' }}"
       alt: "Latest post on UnlikedValentine's Substack"
       title: "Latest post on UnlikedValentine's Substack"
       target: "_blank"
@@ -73,8 +73,8 @@ links:
       latest: true
   - link:
       icon: "fa-brands fa-odysee"
-      text: "{{ vars.OdyseeChannelLatestVideoPlugin['@BehindTheVeil33'].title }}"
-      url: "{{ vars.OdyseeChannelLatestVideoPlugin['@BehindTheVeil33'].url }}"
+      text: "{{ vars.OdyseeChannelLatestVideoPlugin['@BehindTheVeil33'].title | default: 'Latest BehindTheVeil Odysee video' }}"
+      url: "{{ vars.OdyseeChannelLatestVideoPlugin['@BehindTheVeil33'].url | default: 'https://odysee.com/@BehindTheVeil33' }}"
       alt: "Latest BehindTheVeil Odysee video"
       title: "Latest BehindTheVeil Odysee video"
       target: "_blank"

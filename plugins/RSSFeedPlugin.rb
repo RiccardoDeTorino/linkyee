@@ -107,7 +107,7 @@ class RSSFeedPlugin < Plugin
   end
 
   def normalize_date(raw)
-    return '' if raw.empty?
+    return nil if raw.empty?
 
     Time.parse(raw).strftime('%Y-%m-%d')
   rescue ArgumentError

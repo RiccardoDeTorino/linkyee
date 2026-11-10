@@ -12,7 +12,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/configure-pages@v4
-      - uses: actions/jekyll-build-pages@v1
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+      - run: bundle exec ruby ./scaffold.rb
       - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./_output
       - uses: actions/deploy-pages@v4

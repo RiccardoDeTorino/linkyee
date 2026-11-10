@@ -22,7 +22,7 @@ class GithubLastCommitPlugin < Plugin
   def execute
     args.each_with_object({}) do |repo, out|
       out[repo] = cache("gh-last-commit:#{repo}") { load_last_commit(repo) } ||
-                  { 'sha' => '', 'date' => '', 'message' => '' }
+                  { 'sha' => nil, 'date' => nil, 'message' => nil }
     end
   end
 
