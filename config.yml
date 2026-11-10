@@ -26,8 +26,8 @@ plugins:
   - CountdownPlugin:
       linkyee_release: "2024-12-21"
   - YouTubeChannelLatestVideoPlugin:
-      - "@TheGoodTheBadTheU.G.L.Y"
-      - "@BehindTheVeil33"
+      - "https://www.youtube.com/@TheGoodTheBadTheU.G.L.Y"
+      - "https://www.youtube.com/@BehindTheVeil33"
   - OdyseeChannelLatestVideoPlugin:
       - "@BehindTheVeil33"
 
@@ -57,16 +57,16 @@ links:
       latest: true
   - link:
       icon: "fa-brands fa-youtube"
-      text: "{{ vars.YouTubeChannelLatestVideoPlugin['@TheGoodTheBadTheU.G.L.Y'].title }}"
-      url: "{{ vars.YouTubeChannelLatestVideoPlugin['@TheGoodTheBadTheU.G.L.Y'].url }}"
+      text: "{{ vars.YouTubeChannelLatestVideoPlugin['https://www.youtube.com/@TheGoodTheBadTheU.G.L.Y'].title }}"
+      url: "{{ vars.YouTubeChannelLatestVideoPlugin['https://www.youtube.com/@TheGoodTheBadTheU.G.L.Y'].url }}"
       alt: "Latest TheGoodTheBadTheU.G.L.Y video"
       title: "Latest TheGoodTheBadTheU.G.L.Y video"
       target: "_blank"
       latest: true
   - link:
       icon: "fa-brands fa-youtube"
-      text: "{{ vars.YouTubeChannelLatestVideoPlugin['@BehindTheVeil33'].title }}"
-      url: "{{ vars.YouTubeChannelLatestVideoPlugin['@BehindTheVeil33'].url }}"
+      text: "{{ vars.YouTubeChannelLatestVideoPlugin['https://www.youtube.com/@BehindTheVeil33'].title }}"
+      url: "{{ vars.YouTubeChannelLatestVideoPlugin['https://www.youtube.com/@BehindTheVeil33'].url }}"
       alt: "Latest BehindTheVeil video"
       title: "Latest BehindTheVeil video"
       target: "_blank"
