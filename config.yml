@@ -91,8 +91,8 @@ socials:
   - social:
       icon: "fa-brands fa-matrix"
       url: "https://matrix.to/#/#thegoodthebadtheugly:unredacted.org"
-      title: "Matrix Space"
-      alt: "Matrix Space"
+      title: "Unredacted Matrix Space"
+      alt: "Unredacted Matrix Space"
       target: "_blank"
   - social:
       icon: "fa-brands fa-twitter"
