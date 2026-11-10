@@ -57,16 +57,16 @@ links:
       latest: true
   - link:
       icon: "fa-brands fa-youtube"
-      text: "{{ vars.YouTubeChannelLatestVideoPlugin['https://www.youtube.com/@TheGoodTheBadTheU.G.L.Y'].title }}"
-      url: "{{ vars.YouTubeChannelLatestVideoPlugin['https://www.youtube.com/@TheGoodTheBadTheU.G.L.Y'].url }}"
+      text: "{{ vars.YouTubeChannelLatestVideoPlugin['https://www.youtube.com/@TheGoodTheBadTheU.G.L.Y'].title | default: 'Latest TheGoodTheBadTheU.G.L.Y video' }}"
+      url: "{{ vars.YouTubeChannelLatestVideoPlugin['https://www.youtube.com/@TheGoodTheBadTheU.G.L.Y'].url | default: 'https://www.youtube.com/@TheGoodTheBadTheU.G.L.Y' }}"
       alt: "Latest TheGoodTheBadTheU.G.L.Y video"
       title: "Latest TheGoodTheBadTheU.G.L.Y video"
       target: "_blank"
       latest: true
   - link:
       icon: "fa-brands fa-youtube"
-      text: "{{ vars.YouTubeChannelLatestVideoPlugin['https://www.youtube.com/@BehindTheVeil33'].title }}"
-      url: "{{ vars.YouTubeChannelLatestVideoPlugin['https://www.youtube.com/@BehindTheVeil33'].url }}"
+      text: "{{ vars.YouTubeChannelLatestVideoPlugin['https://www.youtube.com/@BehindTheVeil33'].title | default: 'Latest BehindTheVeil video' }}"
+      url: "{{ vars.YouTubeChannelLatestVideoPlugin['https://www.youtube.com/@BehindTheVeil33'].url | default: 'https://www.youtube.com/@BehindTheVeil33' }}"
       alt: "Latest BehindTheVeil video"
       title: "Latest BehindTheVeil video"
       target: "_blank"

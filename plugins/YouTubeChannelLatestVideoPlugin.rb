@@ -8,8 +8,8 @@ require 'uri'
 class YouTubeChannelLatestVideoPlugin < Plugin
   USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'.freeze
   EMPTY = {
-    'title' => '', 'url' => '', 'video_id' => '',
-    'thumbnail' => '', 'published' => '', 'channel' => ''
+    'title' => nil, 'url' => nil, 'video_id' => nil,
+    'thumbnail' => nil, 'published' => nil, 'channel' => nil
   }.freeze
 
   def execute
